@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">API Assistant</string>
+
+    <!-- AuthScreen -->
+    <string name="pin">PIN-код</string>
+    <string name="activate_pin">Включить свет!</string>
+    <string name="description_gif_pin">Махающий пин</string>
+</resources>
