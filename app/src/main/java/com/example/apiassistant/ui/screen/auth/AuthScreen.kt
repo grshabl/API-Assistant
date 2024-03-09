@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.R
 import com.example.apiassistant.model.auth.AuthState
 import com.example.apiassistant.ui.common.animation.AnimatedDestination
@@ -20,7 +20,7 @@ import com.example.apiassistant.ui.common.components.ButtonApply
 import com.example.apiassistant.ui.common.components.PasswordTextField
 import com.example.apiassistant.ui.screen.destinations.AuthScreenDestination
 import com.example.apiassistant.ui.screen.destinations.MainScreenDestination
-import com.example.apiassistant.ui.theme.PINLightTheme
+import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -28,10 +28,9 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @RootNavGraph(start = true)
 @AnimatedDestination
 @Composable
-fun AuthScreen(viewModel: AuthViewModel = viewModel(),
+fun AuthScreen(viewModel: AuthViewModel = hiltViewModel(),
                navigator: DestinationsNavigator
 ) {
-    val viewModel: AuthViewModel = viewModel()
     val state = viewModel.state.value
 
     observeStateUI(state, navigator)
@@ -87,7 +86,7 @@ private fun ButtonAuth(viewModel: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 private fun AuthScreenPreview() {
-    PINLightTheme {
+    ApiAssistantTheme {
         AuthScreen(navigator = EmptyDestinationsNavigator)
     }
 }

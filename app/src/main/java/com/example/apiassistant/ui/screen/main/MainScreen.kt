@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.ui.common.animation.AnimatedDestination
-import com.example.apiassistant.ui.theme.PINLightTheme
+import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
 @AnimatedDestination
 @Composable
-fun MainScreen(viewModel: MainScreenViewModel = viewModel(),
+fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
                navigator: DestinationsNavigator
 ) {
     Box(
@@ -34,7 +34,7 @@ fun MainScreen(viewModel: MainScreenViewModel = viewModel(),
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    PINLightTheme {
+    ApiAssistantTheme {
         MainScreen(navigator = EmptyDestinationsNavigator)
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.ui.screen.NavGraphs
 import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     ApiAssistantTheme {
         // A surface container using the 'background' color from the theme
