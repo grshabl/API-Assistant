@@ -21,11 +21,9 @@ import com.example.apiassistant.ui.common.components.PasswordTextField
 import com.example.apiassistant.ui.screen.destinations.AuthScreenDestination
 import com.example.apiassistant.ui.screen.destinations.MainScreenDestination
 import com.example.apiassistant.ui.theme.ApiAssistantTheme
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
-@RootNavGraph(start = true)
 @AnimatedDestination
 @Composable
 fun AuthScreen(viewModel: AuthViewModel = hiltViewModel(),

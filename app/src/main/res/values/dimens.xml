@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Common -->
+    <dimen name="common_start_padding">16dp</dimen>
+    <dimen name="size_icon">48dp</dimen>
+
     <!-- AuthScreen -->
     <dimen name="size_gif_pin">100dp</dimen>
     <dimen name="padding_top_button_auth">16dp</dimen>

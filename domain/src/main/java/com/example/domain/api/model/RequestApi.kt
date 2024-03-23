@@ -6,5 +6,6 @@ data class RequestApi(
     val method: MethodRequest,
     val url: String,
     val pathParams: List<RequestPathParam>? = null,
-    val body: String? = null
+    val body: String? = null,
+    val isLike: Boolean = false
 )

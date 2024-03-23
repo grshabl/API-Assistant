@@ -39,7 +39,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
 
-    implementation("io.swagger.parser.v3:swagger-parser:2.1.21")
+    implementation("io.swagger.parser.v3:swagger-parser:2.1.21") {
+        exclude(group="io.swagger", module="swagger-parser-safe-url-resolver")
+        exclude(group="javax.validation", module="validation-api")
+    }
     implementation("com.google.code.gson:gson:2.8.8")
 
     testImplementation("junit:junit:4.13.2")

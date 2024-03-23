@@ -36,6 +36,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    packaging {
+        resources.excludes.add("META-INF/ASL-2.0.txt")
+        resources.excludes.add("META-INF/DEPENDENCIES")
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/NOTICE.md")
+        resources.excludes.add("META-INF/LGPL-3.0.txt")
+        resources.excludes.add("draftv3/schema")
+        resources.excludes.add("draftv4/schema")
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
