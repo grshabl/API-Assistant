@@ -42,11 +42,19 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    private fun resetEffect() {
+        _effect.value = null
+    }
+
     fun getLikesApi(listApi: List<RequestApi>) =
         listApi.filter { it.isLike }
 
-    private fun onClickApi(requestApi: RequestApi) {
+    private fun onClickAddApi() {
+        _effect.value = Effect.NavigateToAddApiScreen
+    }
 
+    private fun onClickApi(requestApi: RequestApi) {
+        _effect.value = Effect.NavigateToTestApiScreen
     }
     private fun onClickLikeApi(requestApi: RequestApi) {
 
@@ -57,17 +65,21 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
 
     fun onAction(action: Action) {
         when (action) {
+            Action.OnClickAddApi -> { onClickAddApi() }
             is Action.OnClickApi -> { onClickApi(requestApi = action.requestApi) }
             is Action.OnClickLikeApi -> { onClickLikeApi(requestApi = action.requestApi) }
             is Action.OnClickDeleteApi -> { onClickDeleteApi(requestApi = action.requestApi) }
+            Action.NavigateToOtherScreen -> { resetEffect() }
         }
     }
 
 
     sealed class Action {
+        data object OnClickAddApi: Action()
         data class OnClickApi(val requestApi: RequestApi): Action()
         data class OnClickDeleteApi(val requestApi: RequestApi): Action()
         data class OnClickLikeApi(val requestApi: RequestApi): Action()
+        data object NavigateToOtherScreen: Action()
     }
 
     sealed class Effect {

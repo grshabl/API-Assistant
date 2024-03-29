@@ -13,4 +13,14 @@
 
     <string name="likes_api">Likes API</string>
     <string name="all_api">All API</string>
+
+    <!-- AddApiScreen -->
+    <string name="hint_swagger">url swagger api</string>
+    <string name="parse_swagger">Parse</string>
+    <string name="path_variables">Path variables</string>
+    <string name="body_json">Body (json)</string>
+    <string name="add_path_variable">+</string>
+    <string name="hint_body_json">JSON in body</string>
+    <string name="voice_command">Voice command</string>
+    <string name="save">Save</string>
 </resources>

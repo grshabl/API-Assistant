@@ -7,5 +7,6 @@ data class RequestApi(
     val url: String,
     val pathParams: List<RequestPathParam>? = null,
     val body: String? = null,
+    val voiceString: String? = null,
     val isLike: Boolean = false
 )

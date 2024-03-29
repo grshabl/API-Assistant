@@ -1,5 +1,6 @@
 package com.example.apiassistant.ui.screen.main
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import com.example.apiassistant.R
 import com.example.apiassistant.ui.common.animation.AnimatedDestination
 import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.ToolbarApp
+import com.example.apiassistant.ui.screen.destinations.AddApiScreenDestination
 import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.example.domain.api.model.RequestApi
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -40,7 +42,10 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
 ) {
     observeEffect(
         effect = viewModel.effect.value,
-        navigator = navigator
+        navigator = navigator,
+        actionAfterObserveEffect = {
+            viewModel.onAction(MainScreenViewModel.Action.NavigateToOtherScreen)
+        }
     )
     LoadingComponent(isLoading = viewModel.state.value.isLoading)
 
@@ -57,7 +62,9 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ToolbarApp()
+        ToolbarApp(
+            onClickAddApi = { viewModel.onAction(MainScreenViewModel.Action.OnClickAddApi) }
+        )
         // LoadingComponent
         ColumnOneCategoryApi(
             titleCategory = stringResource(id = R.string.likes_api),
@@ -86,7 +93,7 @@ fun ColumnOneCategoryApi(
     onClickLikeApi: (RequestApi) -> Unit,
     onClickDeleteApi: (RequestApi) -> Unit
 ) {
-    LazyColumn() {
+    LazyColumn {
         item {
             TextCategoryApi(titleCategory)
         }
@@ -116,6 +123,7 @@ fun CardApi(
     Card(modifier = Modifier
         .fillMaxWidth()
         .clickable {
+            Log.d("test", "onClickApi")
             onClickApi(requestApi)
         }
     ) {
@@ -150,12 +158,20 @@ fun CardApi(
 
 private fun observeEffect(
     effect: MainScreenViewModel.Effect?,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    actionAfterObserveEffect: (() -> Unit)? = null
 ) {
+    Log.d("test", "observeEffect")
     effect?.let {
         when (it) {
-            is MainScreenViewModel.Effect.NavigateToAddApiScreen -> {}
+            is MainScreenViewModel.Effect.NavigateToAddApiScreen -> {
+                navigator.navigate(AddApiScreenDestination)
+            }
             is MainScreenViewModel.Effect.NavigateToTestApiScreen -> {}
+        }
+
+        actionAfterObserveEffect?.let { function ->
+            function()
         }
     }
 }
