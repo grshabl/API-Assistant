@@ -4,6 +4,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.51" apply true
     id("kotlin-parcelize")
     kotlin("kapt")
+    id("realm-android")
 }
 
 android {
@@ -45,7 +46,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
-//    implementation("javax.inject:javax.inject:1")
+//    implementation("io.realm:realm-gradle-plugin:10.17.0")
 
     testImplementation("junit:junit:4.13.2")
 }

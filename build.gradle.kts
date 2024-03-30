@@ -5,6 +5,11 @@ plugins {
     id("com.android.library") version "8.1.1" apply false
 }
 
+buildscript {
+    dependencies {
+        classpath("io.realm:realm-gradle-plugin:10.17.0")
+    }
+}
 //subprojects {
 //    dependencies {
 //        classpath "com.google.dagger:hilt-android:2.44"
