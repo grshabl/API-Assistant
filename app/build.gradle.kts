@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("com.google.devtools.ksp") version "1.9.22-1.0.17" // Depends on your kotlin version
     id("com.google.dagger.hilt.android") version "2.51" apply true
+    id("kotlin-parcelize")
 }
 
 android {

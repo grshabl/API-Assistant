@@ -28,6 +28,7 @@ import com.example.apiassistant.ui.common.animation.AnimatedDestination
 import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.ToolbarApp
 import com.example.apiassistant.ui.screen.destinations.AddApiScreenDestination
+import com.example.apiassistant.ui.screen.destinations.TestApiScreenDestination
 import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.example.domain.api.model.RequestApi
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -53,10 +54,10 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
         viewModel.onAction(MainScreenViewModel.Action.OnClickApi(requestApi))
     }
     val onClickLikeApi = { requestApi: RequestApi ->
-        viewModel.onAction(MainScreenViewModel.Action.OnClickApi(requestApi))
+        viewModel.onAction(MainScreenViewModel.Action.OnClickLikeApi(requestApi))
     }
     val onClickDeleteApi = { requestApi: RequestApi ->
-        viewModel.onAction(MainScreenViewModel.Action.OnClickApi(requestApi))
+        viewModel.onAction(MainScreenViewModel.Action.OnClickDeleteApi(requestApi))
     }
 
     Column(
@@ -167,7 +168,9 @@ private fun observeEffect(
             is MainScreenViewModel.Effect.NavigateToAddApiScreen -> {
                 navigator.navigate(AddApiScreenDestination)
             }
-            is MainScreenViewModel.Effect.NavigateToTestApiScreen -> {}
+            is MainScreenViewModel.Effect.NavigateToTestApiScreen -> {
+                navigator.navigate(TestApiScreenDestination(requestApi = it.requestApi))
+            }
         }
 
         actionAfterObserveEffect?.let { function ->

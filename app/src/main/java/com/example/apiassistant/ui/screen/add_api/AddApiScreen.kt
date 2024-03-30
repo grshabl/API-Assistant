@@ -65,7 +65,7 @@ fun AddApiScreen(
                         ))
                     },
                     onValueChange = { newValue ->
-                        viewModel.onAction(AddApiViewModel.Action.UpdateValuePathVariable(
+                        viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(
                             index = index,
                             value = newValue
                         ))

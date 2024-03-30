@@ -54,7 +54,7 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun onClickApi(requestApi: RequestApi) {
-        _effect.value = Effect.NavigateToTestApiScreen
+        _effect.value = Effect.NavigateToTestApiScreen(requestApi)
     }
     private fun onClickLikeApi(requestApi: RequestApi) {
 
@@ -84,7 +84,7 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
 
     sealed class Effect {
         data object NavigateToAddApiScreen: Effect()
-        data object NavigateToTestApiScreen: Effect()
+        data class NavigateToTestApiScreen(val requestApi: RequestApi): Effect()
     }
 
     data class State(

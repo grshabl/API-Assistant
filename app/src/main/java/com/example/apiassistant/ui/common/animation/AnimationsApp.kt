@@ -6,14 +6,15 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-
 import androidx.compose.animation.fadeOut
 import androidx.navigation.NavBackStackEntry
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DestinationStyle
 
-@Destination(style = AnimatedDestinationStyle::class)
-annotation class AnimatedDestination
+@Destination(
+    style = AnimatedDestinationStyle::class
+)
+annotation class AnimatedDestination()
 
 object AnimatedDestinationStyle : DestinationStyle.Animated {
     override fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(): EnterTransition =
