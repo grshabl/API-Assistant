@@ -8,10 +8,10 @@ interface RealmRepository {
 
     suspend fun getRequestApi(id: String): RequestApi?
 
-    fun createRequestApi(requestApi: RequestApi)
+    suspend fun createRequestApi(requestApi: RequestApi): Boolean
 
-    fun updateRequestApi(requestApi: RequestApi)
+    suspend fun updateRequestApi(requestApi: RequestApi): Boolean
 
-    fun deleteRequestApi(requestApi: RequestApi)
+    suspend fun deleteRequestApi(requestApi: RequestApi): Boolean
 
 }

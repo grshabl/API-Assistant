@@ -41,6 +41,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
                navigator: DestinationsNavigator
 ) {
+    viewModel.updateState() // may be optimize it
     observeEffect(
         effect = viewModel.effect.value,
         navigator = navigator,

@@ -3,16 +3,25 @@ package com.example.apiassistant.ui.screen.add_api
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.domain.add_api.AddApiUseCase
 import com.example.domain.api.enums.MethodRequest
+import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddApiViewModel @Inject constructor() : ViewModel() {
+class AddApiViewModel @Inject constructor(
+    private val addApiUseCase: AddApiUseCase
+) : ViewModel() {
 
     private val _state: MutableState<State> = mutableStateOf(State())
     val state: androidx.compose.runtime.State<State> = _state
+
+    private val _effect: MutableState<Effect?> = mutableStateOf(null)
+    val effect: androidx.compose.runtime.State<Effect?> = _effect
 
     private fun setUrl(url: String) {
         _state.value = state.value.copy(url = url)
@@ -57,8 +66,11 @@ class AddApiViewModel @Inject constructor() : ViewModel() {
         _state.value = state.value.copy(voiceString = voiceString)
     }
 
-    private fun saveApi(state: State) {
-
+    private fun saveApi(requestApi: RequestApi) {
+        viewModelScope.launch {
+            addApiUseCase.addApi(requestApi)
+            _effect.value = Effect.GoBack
+        }
     }
 
     fun getMethodsRequest() = MethodRequest.values()
@@ -77,7 +89,17 @@ class AddApiViewModel @Inject constructor() : ViewModel() {
             Action.AddPathVariable -> { addPathVariable() }
             is Action.UpdateBodyJson -> { setBody(bodyJson = action.json) }
             is Action.UpdateVoiceCommand -> { setVoiceCommand(voiceString = action.voiceText)}
-            Action.SaveApi -> { saveApi(state.value) }
+            Action.SaveApi -> {
+                saveApi(
+                    RequestApi(
+                        method = state.value.method,
+                        url = state.value.url,
+                        pathParams = state.value.pathParams,
+                        body = state.value.body,
+                        voiceString = state.value.voiceString
+                    )
+                )
+            }
         }
     }
 
@@ -100,4 +122,8 @@ class AddApiViewModel @Inject constructor() : ViewModel() {
         var body: String? = null,
         var voiceString: String? = null,
     )
+
+    sealed class Effect {
+        data object GoBack : Effect()
+    }
 }

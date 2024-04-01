@@ -1,5 +1,6 @@
 package com.example.apiassistant.ui.screen.add_api
 
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +34,12 @@ fun AddApiScreen(
     viewModel: AddApiViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+
+    observeEffect(
+        effect = viewModel.effect.value,
+        navigator = navigator
+    )
+
     LazyColumn {
         item {
             UrlSwaggerField(
@@ -186,6 +193,24 @@ fun BodyJsonComponent(
         onValueChange = onValueChange
     )
 }
+
+private fun observeEffect(
+    effect: AddApiViewModel.Effect?,
+    navigator: DestinationsNavigator,
+    actionAfterObserveEffect: (() -> Unit)? = null
+) {
+    Log.d("test", "observeEffect")
+    effect?.let {
+        when (it) {
+            AddApiViewModel.Effect.GoBack -> { navigator.popBackStack() }
+        }
+
+        actionAfterObserveEffect?.let { function ->
+            function()
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

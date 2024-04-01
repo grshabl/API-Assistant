@@ -4,15 +4,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
+import com.example.domain.main.usecase.DeleteApiUseCase
+import com.example.domain.main.usecase.GetApiUseCase
+import com.example.domain.main.usecase.LikeApiUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainScreenViewModel @Inject constructor() : ViewModel() {
+class MainScreenViewModel @Inject constructor(
+    private val getApiUseCase: GetApiUseCase,
+    private val likeApiUseCase: LikeApiUseCase,
+    private val deleteApiUseCase: DeleteApiUseCase
+) : ViewModel() {
 
     private val _state: MutableState<State> = mutableStateOf(State())
     val state: androidx.compose.runtime.State<State> = _state
@@ -23,22 +28,20 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
     init {
         viewModelScope.launch {
             _state.value = State(isLoading = true)
-            val listApi = listOf(
-                RequestApi(method = MethodRequest.GET, url="www.site1.ru/{id}"),
-                RequestApi(method = MethodRequest.POST, url="www.site2.ru/", isLike = true),
-                RequestApi(method = MethodRequest.GET, url="www.site3.ru/{id}"),
+            val listApi = getApiUseCase.getAllApi()
+            _state.value = state.value.copy(
+                isLoading = false,
+                listApi = listApi
             )
-            delay(3000)
-            _state.value = _state.value.copy(isLoading = false, listApi = listApi)
-            val listApi2 = listOf(
-                RequestApi(method = MethodRequest.GET, url="www.site1.ru/{id}"),
-                RequestApi(method = MethodRequest.POST, url="www.site2.ru/", isLike = true),
-                RequestApi(method = MethodRequest.GET, url="www.site3.ru/{id}"),
-                RequestApi(method = MethodRequest.GET, url="www.site4.ru/{id}", isLike = true),
+        }
+    }
+
+    fun updateState() {
+        viewModelScope.launch {
+            val listApi = getApiUseCase.getAllApi()
+            _state.value = state.value.copy(
+                listApi = listApi
             )
-            delay(2000)
-            _state.value = _state.value.copy(isLoading = false, listApi = listApi2)
-            getLikesApi(listApi)
         }
     }
 
@@ -57,10 +60,21 @@ class MainScreenViewModel @Inject constructor() : ViewModel() {
         _effect.value = Effect.NavigateToTestApiScreen(requestApi)
     }
     private fun onClickLikeApi(requestApi: RequestApi) {
-
+        viewModelScope.launch {
+            val isUpdate = likeApiUseCase.likeApi(requestApi, !requestApi.isLike)
+            if (isUpdate) {
+                _state.value = state.value.copy(listApi = getApiUseCase.getAllApi())
+            }
+        }
     }
-    private fun onClickDeleteApi(requestApi: RequestApi) {
 
+    private fun onClickDeleteApi(requestApi: RequestApi) {
+        viewModelScope.launch {
+            val isUpdate = deleteApiUseCase.deleteApi(requestApi)
+            if (isUpdate) {
+                _state.value = state.value.copy(listApi = getApiUseCase.getAllApi())
+            }
+        }
     }
 
     fun onAction(action: Action) {
