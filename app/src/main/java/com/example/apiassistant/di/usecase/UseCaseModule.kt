@@ -2,6 +2,8 @@ package com.example.apiassistant.di.usecase
 
 import com.example.domain.add_api.AddApiUseCase
 import com.example.domain.add_api.AddApiUseCaseImpl
+import com.example.domain.api.usecase.ParserUseCase
+import com.example.domain.api.usecase.ParserUseCaseImpl
 import com.example.domain.main.usecase.DeleteApiUseCase
 import com.example.domain.main.usecase.DeleteApiUseCaseImpl
 import com.example.domain.main.usecase.GetApiUseCase
@@ -28,5 +30,8 @@ interface UseCaseModule {
 
     @Binds
     fun provideLikeApiUseCase(likeApiUseCaseImpl: LikeApiUseCaseImpl): LikeApiUseCase
+
+    @Binds
+    fun provideParserUseCase(parserUseCaseImpl: ParserUseCaseImpl): ParserUseCase
 
 }

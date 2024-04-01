@@ -11,15 +11,14 @@ import io.swagger.v3.oas.models.Paths
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.core.models.SwaggerParseResult
-import java.lang.IllegalStateException
-import kotlin.jvm.Throws
+import javax.inject.Inject
 
 interface ParserUseCase {
     @Throws(java.lang.IllegalStateException::class)
     fun getListRequestApi(url: String): List<RequestApi>
 }
 
-class ParserUseCaseImpl : ParserUseCase {
+class ParserUseCaseImpl @Inject constructor(): ParserUseCase {
     private val gson = Gson()
 
     @Throws(IllegalStateException::class)

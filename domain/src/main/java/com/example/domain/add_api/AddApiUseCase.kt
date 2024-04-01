@@ -6,6 +6,8 @@ import javax.inject.Inject
 
 interface AddApiUseCase {
     suspend fun addApi(requestApi: RequestApi): Boolean
+    suspend fun addApi(listApi: List<RequestApi>): Boolean
+
 }
 
 class AddApiUseCaseImpl @Inject constructor(
@@ -14,5 +16,8 @@ class AddApiUseCaseImpl @Inject constructor(
 
     override suspend fun addApi(requestApi: RequestApi) =
         realmRepository.createRequestApi(requestApi)
+
+    override suspend fun addApi(listApi: List<RequestApi>) =
+        realmRepository.createRequestApi(listApi)
 
 }

@@ -56,6 +56,35 @@ class RealmRepositoryImpl @Inject constructor() : RealmRepository {
             return@withContext true
         }
 
+    override suspend fun createRequestApi(listRequestApi: List<RequestApi>): Boolean =
+        withContext(Dispatchers.IO) {
+            Realm.getDefaultInstance().use { realm ->
+                realm.beginTransaction()
+
+                for (requestApi in listRequestApi) {
+                    val request = realm.createObject(Request::class.java, requestApi.id)
+                    val pathParamsList = RealmList<RequestPathParam>()
+                    pathParamsList.addAll(requestApi.pathParams?.map {
+                        val realmObject = realm.createObject(RequestPathParam::class.java)
+                        realmObject.name = it.name
+                        realmObject.type = it.type
+                        return@map realmObject
+                    } ?: listOf())
+
+                    request.method = requestApi.method.name
+                    request.url = requestApi.url
+                    request.pathParams = pathParamsList
+                    request.body = requestApi.body
+                    request.voiceString = requestApi.voiceString
+                    request.isLike = requestApi.isLike
+                }
+
+                realm.commitTransaction()
+            }
+
+            return@withContext true
+        }
+
     override suspend fun updateRequestApi(requestApi: RequestApi) : Boolean =
         withContext(Dispatchers.IO) {
             Realm.getDefaultInstance().use { realm ->

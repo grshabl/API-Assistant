@@ -23,4 +23,5 @@
     <string name="hint_body_json">JSON in body</string>
     <string name="voice_command">Voice command</string>
     <string name="save">Save</string>
+    <string name="error_parse_swagger">Error parsing api</string>
 </resources>

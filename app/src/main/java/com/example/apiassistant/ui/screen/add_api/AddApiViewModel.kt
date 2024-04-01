@@ -8,13 +8,15 @@ import com.example.domain.add_api.AddApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
+import com.example.domain.api.usecase.ParserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddApiViewModel @Inject constructor(
-    private val addApiUseCase: AddApiUseCase
+    private val addApiUseCase: AddApiUseCase,
+    private val parserUseCase: ParserUseCase
 ) : ViewModel() {
 
     private val _state: MutableState<State> = mutableStateOf(State())
@@ -32,7 +34,21 @@ class AddApiViewModel @Inject constructor(
     }
 
     private fun parseSwaggerApi(url: String) {
-        // ... logic use case
+        viewModelScope.launch {
+            // D:\Fast projects\testParserSwagger\swaggerParserKotlin\src\main\resources\swagger_example.json
+            val url = "https://petstore.swagger.io/v2/swagger.json"
+            try {
+                val listParseRequestApi = parserUseCase.getListRequestApi(url)
+                addApiUseCase.addApi(listParseRequestApi)
+                _effect.value = Effect.GoBack
+            } catch (e : Exception) {
+                _effect.value = Effect.ShowErrorParse
+            }
+        }
+    }
+
+    fun setDefaultEffect() {
+        _effect.value = null
     }
 
     @Throws(IndexOutOfBoundsException::class)
@@ -125,5 +141,6 @@ class AddApiViewModel @Inject constructor(
 
     sealed class Effect {
         data object GoBack : Effect()
+        data object ShowErrorParse: Effect()
     }
 }

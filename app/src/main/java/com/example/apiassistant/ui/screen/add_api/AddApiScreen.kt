@@ -1,6 +1,7 @@
 package com.example.apiassistant.ui.screen.add_api
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,7 +39,8 @@ fun AddApiScreen(
 
     observeEffect(
         effect = viewModel.effect.value,
-        navigator = navigator
+        navigator = navigator,
+        actionAfterObserveEffect = { viewModel.setDefaultEffect() }
     )
 
     LazyColumn {
@@ -194,6 +197,7 @@ fun BodyJsonComponent(
     )
 }
 
+@Composable
 private fun observeEffect(
     effect: AddApiViewModel.Effect?,
     navigator: DestinationsNavigator,
@@ -203,6 +207,13 @@ private fun observeEffect(
     effect?.let {
         when (it) {
             AddApiViewModel.Effect.GoBack -> { navigator.popBackStack() }
+            AddApiViewModel.Effect.ShowErrorParse -> {
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(id = R.string.error_parse_swagger),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         actionAfterObserveEffect?.let { function ->
