@@ -10,6 +10,8 @@ import com.example.domain.main.usecase.GetApiUseCase
 import com.example.domain.main.usecase.GetApiUseCaseImpl
 import com.example.domain.main.usecase.LikeApiUseCase
 import com.example.domain.main.usecase.LikeApiUseCaseImpl
+import com.example.domain.test_api.usecase.SendRequestUseCase
+import com.example.domain.test_api.usecase.SendRequestUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,5 +35,8 @@ interface UseCaseModule {
 
     @Binds
     fun provideParserUseCase(parserUseCaseImpl: ParserUseCaseImpl): ParserUseCase
+
+    @Binds
+    fun provideSendRequestUseCase(sendRequestUseCaseImpl: SendRequestUseCaseImpl): SendRequestUseCase
 
 }

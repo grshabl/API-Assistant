@@ -3,17 +3,22 @@ package com.example.apiassistant.ui.screen.test_api
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
+import com.example.domain.test_api.model.RequestParams
+import com.example.domain.test_api.usecase.SendRequestUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = TestApiViewModel.TestApiViewModelFactory::class)
 class TestApiViewModel @AssistedInject constructor(
-    @Assisted private val requestApi: RequestApi
+    @Assisted private val requestApi: RequestApi,
+    private val sendRequestUseCase: SendRequestUseCase
 ) : ViewModel() {
     private val _state: MutableState<State> = mutableStateOf(State(
         method = requestApi.method,
@@ -49,17 +54,14 @@ class TestApiViewModel @AssistedInject constructor(
         _state.value = _state.value.copy(body = bodyJson)
     }
 
-    private fun requestApi(
-        method: MethodRequest,
-        url: String,
-        pathParams: List<RequestPathParam>?,
-        body: String?
-    ) {
-        val response = "SUCCESS"
-        // ...
-        _state.value = state.value.copy(
-            response = response
-        )
+    private fun requestApi(requestParams: RequestParams) {
+        viewModelScope.launch {
+            val response = sendRequestUseCase.request(requestParams)
+
+            _state.value = state.value.copy(
+                response = "${response.code} ${response.message}\n${response.body ?: ""}"
+            )
+        }
     }
 
     fun getMethodsRequest() = MethodRequest.values()
@@ -74,10 +76,12 @@ class TestApiViewModel @AssistedInject constructor(
             is Action.UpdateBodyJson -> { setBody(bodyJson = action.json) }
             Action.RequestApi -> {
                 requestApi(
-                    method = state.value.method,
-                    url = state.value.url,
-                    pathParams = state.value.pathParams,
-                    body = state.value.body
+                    RequestParams(
+                        method = state.value.method,
+                        url = state.value.url,
+                        pathParams = state.value.pathParams,
+                        body = state.value.body
+                    )
                 )
             }
         }
