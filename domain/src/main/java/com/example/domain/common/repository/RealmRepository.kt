@@ -6,7 +6,7 @@ interface RealmRepository {
 
     suspend fun getRequestsApi(): List<RequestApi>
 
-    suspend fun getRequestApi(id: String): RequestApi?
+    suspend fun getRequestApiById(id: String): RequestApi?
 
     suspend fun createRequestApi(requestApi: RequestApi): Boolean
 

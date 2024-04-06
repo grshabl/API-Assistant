@@ -6,6 +6,8 @@ import com.example.domain.api.usecase.ParserUseCase
 import com.example.domain.api.usecase.ParserUseCaseImpl
 import com.example.domain.main.usecase.DeleteApiUseCase
 import com.example.domain.main.usecase.DeleteApiUseCaseImpl
+import com.example.domain.main.usecase.DetectVoiceCommandUseCase
+import com.example.domain.main.usecase.DetectVoiceCommandUseCaseImpl
 import com.example.domain.main.usecase.GetApiUseCase
 import com.example.domain.main.usecase.GetApiUseCaseImpl
 import com.example.domain.main.usecase.LikeApiUseCase
@@ -38,5 +40,9 @@ interface UseCaseModule {
 
     @Binds
     fun provideSendRequestUseCase(sendRequestUseCaseImpl: SendRequestUseCaseImpl): SendRequestUseCase
+
+    @Binds
+    fun provideDetectVoiceCommandUseCase(detectVoiceCommandUseCaseImpl: DetectVoiceCommandUseCaseImpl) :
+            DetectVoiceCommandUseCase
 
 }

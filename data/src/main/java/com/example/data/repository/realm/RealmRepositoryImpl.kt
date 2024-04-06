@@ -22,7 +22,7 @@ class RealmRepositoryImpl @Inject constructor() : RealmRepository {
         }
     }
 
-    override suspend fun getRequestApi(id: String): RequestApi? = withContext(Dispatchers.IO) {
+    override suspend fun getRequestApiById(id: String): RequestApi? = withContext(Dispatchers.IO) {
         Realm.getDefaultInstance().use { realm ->
             val result = realm.where(Request::class.java).equalTo("id", id).findFirst()
             return@withContext result?.mapTo()

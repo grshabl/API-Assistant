@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.api.model.RequestApi
 import com.example.domain.main.usecase.DeleteApiUseCase
+import com.example.domain.main.usecase.DetectVoiceCommandUseCase
 import com.example.domain.main.usecase.GetApiUseCase
 import com.example.domain.main.usecase.LikeApiUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
+    private val detectVoiceCommandUseCase: DetectVoiceCommandUseCase,
     private val getApiUseCase: GetApiUseCase,
     private val likeApiUseCase: LikeApiUseCase,
     private val deleteApiUseCase: DeleteApiUseCase
@@ -52,6 +55,17 @@ class MainScreenViewModel @Inject constructor(
     fun getLikesApi(listApi: List<RequestApi>) =
         listApi.filter { it.isLike }
 
+    private fun recognizeVoiceCommand(command: String?) {
+        viewModelScope.launch(Dispatchers.Default) {
+            command?.let {
+                val requestApi = detectVoiceCommandUseCase.detectVoiceCommand(command)
+                requestApi?.let {
+                    onClickApi(it)
+                }
+            }
+        }
+    }
+
     private fun onClickAddApi() {
         _effect.value = Effect.NavigateToAddApiScreen
     }
@@ -79,6 +93,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun onAction(action: Action) {
         when (action) {
+            is Action.RecognizeVoiceCommand -> { recognizeVoiceCommand(action.command) }
             Action.OnClickAddApi -> { onClickAddApi() }
             is Action.OnClickApi -> { onClickApi(requestApi = action.requestApi) }
             is Action.OnClickLikeApi -> { onClickLikeApi(requestApi = action.requestApi) }
@@ -89,6 +104,7 @@ class MainScreenViewModel @Inject constructor(
 
 
     sealed class Action {
+        data class RecognizeVoiceCommand(val command: String?): Action()
         data object OnClickAddApi: Action()
         data class OnClickApi(val requestApi: RequestApi): Action()
         data class OnClickDeleteApi(val requestApi: RequestApi): Action()

@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
+
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
 
@@ -45,6 +46,8 @@ dependencies {
         exclude(group="javax.validation", module="validation-api")
     }
     implementation("com.google.code.gson:gson:2.8.8")
+
+    implementation("org.apache.commons:commons-text:1.9")
 
     testImplementation("junit:junit:4.13.2")
 }

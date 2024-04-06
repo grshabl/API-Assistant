@@ -7,6 +7,9 @@
     <string name="description_gif_pin">Махающий пин</string>
 
     <!-- MainScreen -->
+    <string name="permission_voice">Need permission for work with microphone</string>
+    <string name="recognize_command">Recognize command</string>
+    <string name="hint_speak">Tell me command</string>
     <string name="add_api">Add API</string>
     <string name="delete_api">Delete API</string>
     <string name="like_api">Like API</string>
