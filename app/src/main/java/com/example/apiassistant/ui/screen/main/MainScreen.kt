@@ -1,43 +1,38 @@
 package com.example.apiassistant.ui.screen.main
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.speech.RecognizerIntent
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.R
 import com.example.apiassistant.ui.common.animation.AnimatedDestination
-import com.example.apiassistant.ui.common.components.ButtonApply
 import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.ToolbarApp
 import com.example.apiassistant.ui.screen.destinations.AddApiScreenDestination
@@ -78,9 +73,7 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ToolbarApp(
-            onClickAddApi = { viewModel.onAction(MainScreenViewModel.Action.OnClickAddApi) }
-        )
-        VoiceRecognitionComponent(
+            onClickAddApi = { viewModel.onAction(MainScreenViewModel.Action.OnClickAddApi) },
             actionAfterRecognize = { command -> viewModel.onAction(MainScreenViewModel.Action.RecognizeVoiceCommand(command))}
         )
         ColumnOneCategoryApi(
@@ -100,46 +93,6 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
             onClickDeleteApi = onClickDeleteApi
         )
     }
-}
-
-@Composable
-fun VoiceRecognitionComponent(
-    actionAfterRecognize: (String?) -> Unit
-) {
-    var recognizedText : String? by remember { mutableStateOf(null) }
-    val context = LocalContext.current
-
-    val hintSpeak = stringResource(id = R.string.hint_speak)
-    val textToastPermission = stringResource(id = R.string.permission_voice)
-
-    val resultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val textResults = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            recognizedText = textResults?.get(0)
-
-            actionAfterRecognize(recognizedText)
-        }
-    }
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, hintSpeak)
-
-            resultLauncher.launch(intent)
-        } else {
-            Toast.makeText(context, textToastPermission, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    ButtonApply(
-        text = stringResource(id = R.string.voice_command),
-        onClick = {
-            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-        }
-    )
 }
 
 @Composable
@@ -167,7 +120,18 @@ fun ColumnOneCategoryApi(
 
 @Composable
 fun TextCategoryApi(title: String) {
-    Text(text = title)
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.common_start_padding),
+                vertical = 10.dp
+            ),
+        text = title,
+        fontSize = 16.sp,
+        color = MaterialTheme.colorScheme.onPrimary
+    )
 }
 
 @Composable
@@ -177,21 +141,50 @@ fun CardApi(
     onClickLikeApi: (RequestApi) -> Unit,
     onClickDeleteApi: (RequestApi) -> Unit
 ) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
+//            .border(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
+            .padding(horizontal = 1.dp, vertical = 1.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(vertical = 6.dp)
         .clickable {
             Log.d("test", "onClickApi")
             onClickApi(requestApi)
-        }
+        },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = requestApi.method.name)
-            Text(text = requestApi.url)
+            Text(
+                modifier = Modifier.fillMaxWidth(0.2f).padding(8.dp),
+                text = requestApi.method.name,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(0.6f).padding(4.dp),
+                text = requestApi.url,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1,
+                fontSize = 13.sp,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+            )
+        }
+        Row(
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
             Icon(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.size_icon))
+                    .size(36.dp)
                     .clickable(onClick = {
                         onClickDeleteApi(requestApi)
                     }),
@@ -201,7 +194,7 @@ fun CardApi(
             )
             Icon(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.size_icon))
+                    .size(36.dp)
                     .clickable(onClick = {
                         onClickLikeApi(requestApi)
                     }),

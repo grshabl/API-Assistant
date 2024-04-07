@@ -18,13 +18,22 @@
     <string name="all_api">All API</string>
 
     <!-- AddApiScreen -->
+    <string name="title_parse_api">Parse swagger open API</string>
     <string name="hint_swagger">url swagger api</string>
     <string name="parse_swagger">Parse</string>
+    <string name="title_input_api">Or input API</string>
+    <string name="hint_url">url api</string>
     <string name="path_variables">Path variables</string>
+    <string name="name_variable">name variable</string>
+    <string name="type_variable">type</string>
     <string name="body_json">Body (json)</string>
-    <string name="add_path_variable">+</string>
+    <string name="add_path_variable">Add variable</string>
     <string name="hint_body_json">JSON in body</string>
     <string name="voice_command">Voice command</string>
     <string name="save">Save</string>
     <string name="error_parse_swagger">Error parsing api</string>
+
+    <!-- Test api -->
+    <string name="test_api">Test API</string>
+    <string name="request">Request</string>
 </resources>

@@ -48,6 +48,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 //    implementation("io.realm:realm-gradle-plugin:10.17.0")
+    api("com.google.code.gson:gson:2.8.8")
 
     testImplementation("junit:junit:4.13.2")
 }

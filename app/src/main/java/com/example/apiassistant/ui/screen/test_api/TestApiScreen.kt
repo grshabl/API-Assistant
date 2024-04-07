@@ -1,16 +1,24 @@
 package com.example.apiassistant.ui.screen.test_api
 
 import android.os.Parcelable
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.R
 import com.example.apiassistant.ui.common.animation.AnimatedDestinationStyle
 import com.example.apiassistant.ui.common.components.ButtonApply
+import com.example.apiassistant.ui.common.components.StandartToolbar
 import com.example.apiassistant.ui.common.components.TitleText
 import com.example.apiassistant.ui.screen.add_api.BodyJsonComponent
 import com.example.apiassistant.ui.screen.add_api.PathVariableComponent
@@ -37,6 +45,11 @@ fun TestApiScreen(
     }
 
     LazyColumn {
+        item {
+            StandartToolbar(
+                title = stringResource(id = R.string.test_api),
+                clickBack = { navigator.popBackStack() } )
+        }
         item {
             UrlApiField(
                 url = viewModel.state.value.url,
@@ -79,11 +92,18 @@ fun TestApiScreen(
             )
         }
         item {
-            ResponseField(response = viewModel.state.value.response)
+            ResponseField(response = viewModel.getResponseText(viewModel.state.value.response))
         }
         item {
             ButtonApply(
-                text = stringResource(id = R.string.save),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = 16.dp, horizontal = dimensionResource(
+                            id = R.dimen.common_start_padding
+                        )
+                    ),
+                text = stringResource(id = R.string.request),
                 onClick = {
                     viewModel.onAction(TestApiViewModel.Action.RequestApi)
                 }
@@ -97,7 +117,10 @@ fun ResponseField(
     response: String
 ) {
     Text(
-        text = response
+        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.common_start_padding)),
+        text = response,
+        color = MaterialTheme.colorScheme.onPrimary,
+        fontSize = 11.sp
     )
 }
 

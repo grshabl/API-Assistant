@@ -1,10 +1,16 @@
 package com.example.apiassistant.ui.common.components
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
+import android.speech.RecognizerIntent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +20,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,9 +47,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -71,13 +83,14 @@ fun InputTextField(
     modifier: Modifier = Modifier,
     text: String = "",
     onValueChange: (String) -> Unit = {},
-    label: String = ""
+    label: String = "",
 ) {
     OutlinedTextField(
         modifier = modifier,
         value = text,
         onValueChange = onValueChange,
-        label = { Text(label) }
+        label = { Text(label) },
+        maxLines = 1
     )
 }
 
@@ -91,7 +104,10 @@ fun ButtonApply(
         modifier = modifier,
         onClick = onClick)
     {
-        Text(text = text)
+        Text(
+            text = text,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
@@ -137,25 +153,65 @@ fun AnimatedImage(
 
 @Composable
 fun ToolbarApp(
-    onClickAddApi: () -> Unit
+    onClickAddApi: () -> Unit,
+    actionAfterRecognize: (String?) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primary),
+            .background(color = MaterialTheme.colorScheme.primary)
+            .padding(vertical = 4.dp, horizontal = dimensionResource(id = R.dimen.common_start_padding)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.common_start_padding)), 
-            text = stringResource(id = R.string.app_name))
+            color = MaterialTheme.colorScheme.secondary,
+            text = stringResource(id = R.string.app_name),
+            fontSize = 20.sp
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_icon))
+                    .clickable(onClick = {
+                        onClickAddApi()
+                    }),
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(id = R.string.add_api),
+                tint = MaterialTheme.colorScheme.secondary
+            )
+           VoiceRecognitionComponent(
+               actionAfterRecognize = actionAfterRecognize
+           )
+        }
+    }
+}
+
+@Composable
+fun StandartToolbar(
+    title: String,
+    clickBack : () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.primary)
+            .padding(vertical = 4.dp, horizontal = dimensionResource(id = R.dimen.common_start_padding)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            color = MaterialTheme.colorScheme.secondary,
+            text = title,
+            fontSize = 20.sp
+        )
         Icon(
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_icon))
-                .clickable(onClick = {
-                    onClickAddApi()
-                }),
-            imageVector = Icons.Default.Add,
+                .clickable {
+                    clickBack()
+                },
+            imageVector = Icons.Default.KeyboardArrowUp,
             contentDescription = stringResource(id = R.string.add_api),
             tint = MaterialTheme.colorScheme.secondary
         )
@@ -163,10 +219,55 @@ fun ToolbarApp(
 }
 
 @Composable
+fun VoiceRecognitionComponent(
+    actionAfterRecognize: (String?) -> Unit
+) {
+    var recognizedText : String? by remember { mutableStateOf(null) }
+    val context = LocalContext.current
+
+    val hintSpeak = stringResource(id = R.string.hint_speak)
+    val textToastPermission = stringResource(id = R.string.permission_voice)
+
+    val resultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val textResults = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            recognizedText = textResults?.get(0)
+
+            actionAfterRecognize(recognizedText)
+        }
+    }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, hintSpeak)
+
+            resultLauncher.launch(intent)
+        } else {
+            Toast.makeText(context, textToastPermission, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    Image(
+        modifier = Modifier
+            .size(38.dp)
+            .clickable(onClick = {
+                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }),
+        painter = painterResource(R.drawable.ic_mic),
+        contentDescription = stringResource(id = R.string.add_api),
+    )
+}
+
+@Composable
 fun TitleText(text: String) {
     Text(
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.common_start_padding)),
-        text = text
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.common_start_padding), vertical = 8.dp),
+        text = text,
+        color = MaterialTheme.colorScheme.onPrimary
     )
 }
 
@@ -192,12 +293,19 @@ fun <T> DropdownMenuInput(
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf(0) }
 
-    Box {
-        Button(
-            onClick = { expanded = true }
-        ) {
-            Text(text = items[selectedIndex].toString())
-        }
+    Box(modifier = Modifier.padding(top=4.dp)) {
+        Text(
+            modifier = Modifier
+                .wrapContentWidth()
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
+                .padding(horizontal = 1.dp, vertical = 1.dp)
+                .background(MaterialTheme.colorScheme.background)
+                .padding(vertical = 6.dp, horizontal = 12.dp)
+                .clickable { expanded = true },
+            text = items[selectedIndex].toString(),
+            color = MaterialTheme.colorScheme.onPrimary
+        )
 
         DropdownMenu(
             expanded = expanded,

@@ -8,7 +8,10 @@ import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
 import com.example.domain.test_api.model.RequestParams
+import com.example.domain.test_api.model.Response
 import com.example.domain.test_api.usecase.SendRequestUseCase
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -59,12 +62,25 @@ class TestApiViewModel @AssistedInject constructor(
             val response = sendRequestUseCase.request(requestParams)
 
             _state.value = state.value.copy(
-                response = "${response.code} ${response.message}\n${response.body ?: ""}"
+                response = response
             )
         }
     }
 
     fun getMethodsRequest() = MethodRequest.values()
+
+    fun getResponseText(response: Response?) : String {
+        try {
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            val jsonElement = JsonParser.parseString(response?.body)
+            val json = gson.toJson(jsonElement)
+
+            return "${response?.code ?: ""} ${response?.message ?: ""}\n${json}"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "${response?.code ?: ""} ${response?.message ?: ""}\n${response?.body ?: ""}"
+        }
+    }
 
     fun onAction(action: Action) {
         when (action) {
@@ -100,7 +116,7 @@ class TestApiViewModel @AssistedInject constructor(
         var url: String = "",
         var pathParams: List<RequestPathParam>? = null,
         var body: String? = null,
-        var response: String = ""
+        var response: Response? = null
     )
 
     @AssistedFactory

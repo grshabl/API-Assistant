@@ -2,7 +2,7 @@
 <resources>
     <!-- Common -->
     <dimen name="common_start_padding">16dp</dimen>
-    <dimen name="size_icon">48dp</dimen>
+    <dimen name="size_icon">44dp</dimen>
 
     <!-- AuthScreen -->
     <dimen name="size_gif_pin">100dp</dimen>
