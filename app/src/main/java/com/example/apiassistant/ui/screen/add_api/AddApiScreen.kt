@@ -46,7 +46,9 @@ fun AddApiScreen(
     LazyColumn {
         item {
             UrlSwaggerField(
-                onClickParse = { viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi) }
+                onClickParse = { urlSwagger ->
+                    viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi(urlSwagger))
+                }
             )
         }
         item {

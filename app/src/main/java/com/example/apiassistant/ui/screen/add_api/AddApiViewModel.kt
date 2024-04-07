@@ -61,7 +61,7 @@ class AddApiViewModel @Inject constructor(
         listNewPathParams[index] = listNewPathParams[index]
             .copy(
                 name = name ?: listNewPathParams[index].name,
-                value = type ?: listNewPathParams[index].type
+                type = type ?: listNewPathParams[index].type
             )
         _state.value = _state.value.copy(pathParams = listNewPathParams)
     }
@@ -95,7 +95,7 @@ class AddApiViewModel @Inject constructor(
         when (action) {
             is Action.SetUrl -> { setUrl(action.url) }
             is Action.ChangeMethodRequest -> { setMethodRequest(method = action.methodRequest) }
-            Action.ParseSwaggerApi -> { parseSwaggerApi(url = state.value.url) }
+            is Action.ParseSwaggerApi -> { parseSwaggerApi(url = action.urlSwagger) }
             is Action.UpdateNamePathVariable -> {
                 updatePathVariable(name = action.name, index = action.index)
             }
@@ -122,7 +122,7 @@ class AddApiViewModel @Inject constructor(
     sealed class Action {
         data class SetUrl(val url: String): Action()
         data class ChangeMethodRequest(val methodRequest: MethodRequest): Action()
-        data object ParseSwaggerApi: Action()
+        data class ParseSwaggerApi(val urlSwagger: String): Action()
         data class UpdateNamePathVariable(val index: Int, val name: String): Action()
         data class UpdateTypePathVariable(val index: Int, val value: String): Action()
         data object AddPathVariable: Action()

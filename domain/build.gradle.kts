@@ -50,4 +50,5 @@ dependencies {
     implementation("org.apache.commons:commons-text:1.9")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:4.8.1")
 }

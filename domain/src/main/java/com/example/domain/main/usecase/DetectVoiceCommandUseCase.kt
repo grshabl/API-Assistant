@@ -1,6 +1,5 @@
 package com.example.domain.main.usecase
 
-import android.util.Log
 import com.example.domain.api.model.RequestApi
 import com.example.domain.common.repository.RealmRepository
 import org.apache.commons.text.similarity.JaccardSimilarity
@@ -25,7 +24,6 @@ class DetectVoiceCommandUseCaseImpl @Inject constructor(
         // else find 80% similarity
         for (requestApi in listRequestApi) {
             requestApi.voiceString?.let {
-                Log.d("test", getPercentSimilarity(it, detectedText).toString())
                 if (getPercentSimilarity(it, detectedText) >= MIN_PERCENT_SIMILARITY) {
                     return requestApi
                 }

@@ -16,7 +16,7 @@ class SendRequestUseCaseImpl @Inject constructor(
     override suspend fun request(requestParams: RequestParams): Response {
         var urlWithParams = if (requestParams.pathParams.isNullOrEmpty() ||
             requestParams.url.contains("?")) requestParams.url
-        else "$requestParams?"
+        else "${requestParams.url}?"
 
         requestParams.pathParams?.let {
             for (param in it) {
