@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">API Ассистент</string>
+
+    <!-- MainScreen -->
+    <string name="permission_voice">Необходимо разрешение для работы с микрофоном</string>
+    <string name="recognize_command">Распознать команду</string>
+    <string name="hint_speak">Назовите команду</string>
+    <string name="add_api">Добавить API</string>
+    <string name="delete_api">Удалить API</string>
+    <string name="like_api">Добавить в избранное</string>
+
+    <string name="likes_api">Избранное API</string>
+    <string name="all_api">Все API</string>
+
+    <!-- AddApiScreen -->
+    <string name="title_parse_api">Спарсите swagger open API</string>
+    <string name="hint_swagger">url swagger api</string>
+    <string name="parse_swagger">Парсить</string>
+    <string name="title_input_api">Или заполните API</string>
+    <string name="hint_url">url api</string>
+    <string name="path_variables">Path переменные</string>
+    <string name="name_variable">имя</string>
+    <string name="type_variable">тип</string>
+    <string name="body_json">Body (json)</string>
+    <string name="add_path_variable">Добавить переменную</string>
+    <string name="hint_body_json">JSON в body</string>
+    <string name="voice_command">Голосовая команда</string>
+    <string name="save">Сохранить</string>
+    <string name="error_parse_swagger">Ошибка парсинга api</string>
+
+    <!-- Test api -->
+    <string name="test_api">Тестирование API</string>
+    <string name="request">Отправить запрос</string>
+    <string name="value_variable">value</string>
+</resources>

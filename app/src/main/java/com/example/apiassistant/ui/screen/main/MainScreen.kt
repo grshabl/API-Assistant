@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -21,8 +20,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -76,22 +78,32 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
             onClickAddApi = { viewModel.onAction(MainScreenViewModel.Action.OnClickAddApi) },
             actionAfterRecognize = { command -> viewModel.onAction(MainScreenViewModel.Action.RecognizeVoiceCommand(command))}
         )
-        ColumnOneCategoryApi(
-            titleCategory = stringResource(id = R.string.likes_api),
-            listApi = viewModel.getLikesApi(
-                listApi = viewModel.state.value.listApi,
-            ),
-            onClickApi = onClickApi,
-            onClickLikeApi = onClickLikeApi,
-            onClickDeleteApi = onClickDeleteApi
-        )
-        ColumnOneCategoryApi(
-            titleCategory = stringResource(id = R.string.all_api),
-            listApi = viewModel.state.value.listApi,
-            onClickApi = onClickApi,
-            onClickLikeApi = onClickLikeApi,
-            onClickDeleteApi = onClickDeleteApi
-        )
+        LazyColumn {
+            item {
+                key ("likes api") {
+                    ColumnOneCategoryApi(
+                        titleCategory = stringResource(id = R.string.likes_api),
+                        listApi = viewModel.getLikesApi(
+                            listApi = viewModel.state.value.listApi,
+                        ),
+                        onClickApi = onClickApi,
+                        onClickLikeApi = onClickLikeApi,
+                        onClickDeleteApi = onClickDeleteApi
+                    )
+                }
+            }
+            item {
+                key("all api") {
+                    ColumnOneCategoryApi(
+                        titleCategory = stringResource(id = R.string.all_api),
+                        listApi = viewModel.state.value.listApi,
+                        onClickApi = onClickApi,
+                        onClickLikeApi = onClickLikeApi,
+                        onClickDeleteApi = onClickDeleteApi
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -101,13 +113,18 @@ fun ColumnOneCategoryApi(
     listApi: List<RequestApi>,
     onClickApi: (RequestApi) -> Unit,
     onClickLikeApi: (RequestApi) -> Unit,
-    onClickDeleteApi: (RequestApi) -> Unit
+    onClickDeleteApi: (RequestApi) -> Unit,
 ) {
-    LazyColumn {
-        item {
-            TextCategoryApi(titleCategory)
-        }
-        items(listApi) { requestApi ->
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(8.dp))
+//            .padding(horizontal = 1.dp, vertical = 1.dp)
+//            .background(MaterialTheme.colorScheme.background)
+    ) {
+        TextCategoryApi(titleCategory)
+        listApi.forEach { requestApi ->
             CardApi(
                 requestApi = requestApi,
                 onClickApi = { onClickApi(requestApi) },
@@ -123,7 +140,15 @@ fun TextCategoryApi(title: String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(bottom = 10.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    ),
+                )
+            )
             .padding(
                 horizontal = dimensionResource(id = R.dimen.common_start_padding),
                 vertical = 10.dp
@@ -144,16 +169,25 @@ fun CardApi(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 10.dp, vertical = 8.dp)
-            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.secondaryContainer,
+                    ),
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp))
 //            .border(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 1.dp, vertical = 1.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 6.dp)
-        .clickable {
-            Log.d("test", "onClickApi")
-            onClickApi(requestApi)
-        },
+            .clickable {
+                Log.d("test", "onClickApi")
+                onClickApi(requestApi)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -162,15 +196,19 @@ fun CardApi(
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(0.2f).padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.2f)
+                    .padding(8.dp),
                 text = requestApi.method.name,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Start,
             )
             Text(
-                modifier = Modifier.fillMaxWidth(0.6f).padding(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .padding(4.dp),
                 text = requestApi.url,
                 color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,

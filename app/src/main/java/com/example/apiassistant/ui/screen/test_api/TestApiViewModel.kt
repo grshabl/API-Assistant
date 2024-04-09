@@ -59,10 +59,21 @@ class TestApiViewModel @AssistedInject constructor(
 
     private fun requestApi(requestParams: RequestParams) {
         viewModelScope.launch {
-            val response = sendRequestUseCase.request(requestParams)
+            _state.value = _state.value.copy(isLoading = true)
+            var response = Response(
+                code = -1,
+                message = "Fialed request"
+            )
+
+            try {
+                response = sendRequestUseCase.request(requestParams)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             _state.value = state.value.copy(
-                response = response
+                response = response,
+                isLoading = false
             )
         }
     }
@@ -112,6 +123,7 @@ class TestApiViewModel @AssistedInject constructor(
     }
 
     data class State(
+        var isLoading: Boolean = false,
         var method: MethodRequest = MethodRequest.GET,
         var url: String = "",
         var pathParams: List<RequestPathParam>? = null,

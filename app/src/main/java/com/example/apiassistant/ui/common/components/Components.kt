@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -58,6 +60,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.example.apiassistant.R
+import com.example.apiassistant.ui.theme.robotoMedium
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,6 +98,16 @@ fun InputTextField(
 }
 
 @Composable
+fun VerticalLine() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .wrapContentHeight()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+    )
+}
+
+@Composable
 fun ButtonApply(
     modifier: Modifier = Modifier,
     text: String = "",
@@ -106,7 +119,7 @@ fun ButtonApply(
     {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -160,14 +173,18 @@ fun ToolbarApp(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.primary)
-            .padding(vertical = 4.dp, horizontal = dimensionResource(id = R.dimen.common_start_padding)),
+            .padding(
+                vertical = 4.dp,
+                horizontal = dimensionResource(id = R.dimen.common_start_padding)
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             color = MaterialTheme.colorScheme.secondary,
             text = stringResource(id = R.string.app_name),
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            fontFamily = robotoMedium
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -196,7 +213,10 @@ fun StandartToolbar(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.primary)
-            .padding(vertical = 4.dp, horizontal = dimensionResource(id = R.dimen.common_start_padding)),
+            .padding(
+                vertical = 4.dp,
+                horizontal = dimensionResource(id = R.dimen.common_start_padding)
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -298,7 +318,11 @@ fun <T> DropdownMenuInput(
             modifier = Modifier
                 .wrapContentWidth()
                 .padding(horizontal = 10.dp, vertical = 8.dp)
-                .border(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .padding(horizontal = 1.dp, vertical = 1.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = 6.dp, horizontal = 12.dp)

@@ -1,7 +1,7 @@
 package com.example.apiassistant.ui.screen.add_api
 
 import com.example.apiassistant.utils.MainDispatcherRule
-import com.example.domain.add_api.AddApiUseCase
+import com.example.domain.add_api.usecase.AddApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam

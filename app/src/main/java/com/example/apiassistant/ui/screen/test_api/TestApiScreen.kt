@@ -1,6 +1,7 @@
 package com.example.apiassistant.ui.screen.test_api
 
 import android.os.Parcelable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.R
 import com.example.apiassistant.ui.common.animation.AnimatedDestinationStyle
 import com.example.apiassistant.ui.common.components.ButtonApply
+import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.StandartToolbar
 import com.example.apiassistant.ui.common.components.TitleText
 import com.example.apiassistant.ui.screen.add_api.BodyJsonComponent
@@ -43,6 +45,8 @@ fun TestApiScreen(
     val viewModel : TestApiViewModel = hiltViewModel<TestApiViewModel, TestApiViewModel.TestApiViewModelFactory> { factory ->
         factory.create(navArgs.requestApi)
     }
+
+    LoadingComponent(isLoading = viewModel.state.value.isLoading)
 
     LazyColumn {
         item {
@@ -76,7 +80,9 @@ fun TestApiScreen(
                             index = index,
                             value = newValue
                         ))
-                    }
+                    },
+                    labelFirstColumn = stringResource(id = R.string.name_variable),
+                    labelSecondColumn = stringResource(id = R.string.value_variable)
                 )
             }
         }
@@ -92,7 +98,9 @@ fun TestApiScreen(
             )
         }
         item {
-            ResponseField(response = viewModel.getResponseText(viewModel.state.value.response))
+            if (viewModel.getResponseText(viewModel.state.value.response).isNotEmpty()) {
+                ResponseField(response = viewModel.getResponseText(viewModel.state.value.response))
+            }
         }
         item {
             ButtonApply(
@@ -117,7 +125,11 @@ fun ResponseField(
     response: String
 ) {
     Text(
-        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.common_start_padding)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.common_start_padding))
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+            .padding(16.dp),
         text = response,
         color = MaterialTheme.colorScheme.onPrimary,
         fontSize = 11.sp

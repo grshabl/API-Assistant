@@ -1,11 +1,6 @@
 <resources>
     <string name="app_name">API Assistant</string>
 
-    <!-- AuthScreen -->
-    <string name="pin">PIN-код</string>
-    <string name="activate_pin">Включить свет!</string>
-    <string name="description_gif_pin">Махающий пин</string>
-
     <!-- MainScreen -->
     <string name="permission_voice">Need permission for work with microphone</string>
     <string name="recognize_command">Recognize command</string>
@@ -24,7 +19,7 @@
     <string name="title_input_api">Or input API</string>
     <string name="hint_url">url api</string>
     <string name="path_variables">Path variables</string>
-    <string name="name_variable">name variable</string>
+    <string name="name_variable">name</string>
     <string name="type_variable">type</string>
     <string name="body_json">Body (json)</string>
     <string name="add_path_variable">Add variable</string>
@@ -36,4 +31,5 @@
     <!-- Test api -->
     <string name="test_api">Test API</string>
     <string name="request">Request</string>
+    <string name="value_variable">value</string>
 </resources>

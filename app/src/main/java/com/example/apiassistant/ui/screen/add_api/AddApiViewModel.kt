@@ -4,11 +4,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.add_api.AddApiUseCase
+import com.example.domain.add_api.usecase.AddApiUseCase
+import com.example.domain.add_api.usecase.ParseUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
-import com.example.domain.api.usecase.ParserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddApiViewModel @Inject constructor(
     private val addApiUseCase: AddApiUseCase,
-    private val parserUseCase: ParserUseCase
+    private val parseUseCase: ParseUseCase
 ) : ViewModel() {
 
     private val _state: MutableState<State> = mutableStateOf(State())
@@ -35,14 +35,19 @@ class AddApiViewModel @Inject constructor(
 
     private fun parseSwaggerApi(url: String) {
         viewModelScope.launch {
-            // D:\Fast projects\testParserSwagger\swaggerParserKotlin\src\main\resources\swagger_example.json
-            val url = "https://petstore.swagger.io/v2/swagger.json"
             try {
-                val listParseRequestApi = parserUseCase.getListRequestApi(url)
-                addApiUseCase.addApi(listParseRequestApi)
-                _effect.value = Effect.GoBack
+                _state.value = state.value.copy(isLoading = true)
+                val listParseRequestApi = parseUseCase.parse(url)
+                if (listParseRequestApi != null) {
+                    addApiUseCase.addApi(listParseRequestApi)
+                    _effect.value = Effect.GoBack
+                } else {
+                    _effect.value = Effect.ShowErrorParse
+                }
             } catch (e : Exception) {
                 _effect.value = Effect.ShowErrorParse
+            } finally {
+                _state.value = state.value.copy(isLoading = false)
             }
         }
     }
@@ -132,6 +137,7 @@ class AddApiViewModel @Inject constructor(
     }
 
     data class State(
+        var isLoading: Boolean = false,
         var method: MethodRequest = MethodRequest.GET,
         var url: String = "",
         var pathParams: List<RequestPathParam>? = null,

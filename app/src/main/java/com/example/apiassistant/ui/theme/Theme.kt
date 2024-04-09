@@ -28,7 +28,8 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Dark,
     tertiary = Red,
     background = White,
-    onBackground = LightBlue
+    onBackground = LightBlue,
+    onSecondaryContainer = LightGrayEnd
 
     //1. **ColorPrimary**: Это основной цвет приложения, используемый для выделения основных элементов интерфейса,
 // таких как заголовки, фоновые панели и акцентные элементы.

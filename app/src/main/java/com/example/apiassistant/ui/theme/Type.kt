@@ -10,13 +10,28 @@ import androidx.compose.ui.unit.sp
 import com.example.apiassistant.R
 
 val robotoMedium = FontFamily(
-        Font(
-            resId = R.font.roboto_medium,
-            weight = FontWeight.Bold,
-            style = FontStyle.Normal
-        )
+    Font(
+        resId = R.font.roboto_medium,
+        weight = FontWeight.Bold,
+        style = FontStyle.Normal
     )
+)
 val robotoRegular = FontFamily(
+    Font(
+        resId = R.font.roboto_regular,
+        weight = FontWeight.Normal,
+        style = FontStyle.Normal
+    )
+)
+
+val montserratMedium = FontFamily(
+    Font(
+        resId = R.font.montserrat_medium,
+        weight = FontWeight.Bold,
+        style = FontStyle.Normal
+    )
+)
+val montserratRegular = FontFamily(
     Font(
         resId = R.font.roboto_regular,
         weight = FontWeight.Normal,
@@ -27,14 +42,14 @@ val robotoRegular = FontFamily(
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = robotoRegular,
+        fontFamily = montserratMedium,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = robotoRegular,
+        fontFamily = montserratRegular,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,

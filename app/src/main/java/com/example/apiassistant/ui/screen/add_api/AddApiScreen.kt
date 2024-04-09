@@ -6,24 +6,32 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -36,6 +44,7 @@ import com.example.apiassistant.ui.common.animation.AnimatedDestination
 import com.example.apiassistant.ui.common.components.ButtonApply
 import com.example.apiassistant.ui.common.components.DropdownMenuInput
 import com.example.apiassistant.ui.common.components.InputTextField
+import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.StandartToolbar
 import com.example.apiassistant.ui.common.components.TitleText
 import com.example.apiassistant.ui.screen.main.TextCategoryApi
@@ -57,6 +66,8 @@ fun AddApiScreen(
         navigator = navigator,
         actionAfterObserveEffect = { viewModel.setDefaultEffect() }
     )
+    
+    LoadingComponent(isLoading = viewModel.state.value.isLoading)
 
     LazyColumn {
         item {
@@ -104,8 +115,26 @@ fun AddApiScreen(
                             index = index,
                             value = newValue
                         ))
-                    }
+                    },
+                    labelFirstColumn = stringResource(id = R.string.name_variable),
+                    labelSecondColumn = stringResource(id = R.string.type_variable)
                 )
+//                DoubleTextField(
+//                    label1 = stringResource(id = R.string.name_variable),
+//                    label2 = stringResource(id = R.string.type_variable),
+//                    onValueChange1 = { newValue ->
+//                        viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(
+//                            index = index,
+//                            name = newValue
+//                        ))
+//                    },
+//                    onValueChange2 = { newValue ->
+//                        viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(
+//                            index = index,
+//                            value = newValue
+//                        ))
+//                    }
+//                )
             }
         }
         item {
@@ -231,9 +260,63 @@ fun UrlApiField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DoubleTextField(
+    modifier: Modifier = Modifier,
+    label1: String,
+    label2: String,
+    onValueChange1: (String) -> Unit,
+    onValueChange2: (String) -> Unit
+) {
+    val borderColor = Color.Gray
+    val dividerColor = Color.LightGray
+
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical=8.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, borderColor),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = "",
+                onValueChange = onValueChange1,
+                label = { Text(label1) },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
+            )
+
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(30.dp)
+                    .background(dividerColor)
+            )
+
+            TextField(
+                modifier = Modifier.weight(1f).background(MaterialTheme.colorScheme.background),
+                value = "",
+                onValueChange = onValueChange2,
+                label = { Text(label2) },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
+            )
+        }
+    }
+}
 @Composable
 fun PathVariableComponent(
     pathParam: RequestPathParam,
+    labelFirstColumn: String,
+    labelSecondColumn: String,
     onNameChange: (newValue: String) -> Unit,
     onValueChange: (newValue: String) -> Unit
 ) {
@@ -245,15 +328,17 @@ fun PathVariableComponent(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         InputTextField(
-            modifier = Modifier.fillMaxWidth(0.7f).padding(end=8.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .padding(end = 8.dp),
             text = pathParam.name,
             onValueChange = onNameChange,
-            label = stringResource(id = R.string.name_variable)
+            label = labelFirstColumn
         )
         InputTextField(
             modifier = Modifier.wrapContentWidth(),
             text = pathParam.type,
-            label = stringResource(id = R.string.type_variable),
+            label = labelSecondColumn,
             onValueChange = onValueChange
         )
     }
