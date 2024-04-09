@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -46,7 +47,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -87,13 +91,15 @@ fun InputTextField(
     text: String = "",
     onValueChange: (String) -> Unit = {},
     label: String = "",
+    enabled: Boolean= true
 ) {
     OutlinedTextField(
         modifier = modifier,
         value = text,
         onValueChange = onValueChange,
-        label = { Text(label) },
-        maxLines = 1
+        label = { Text(text = label) },
+        maxLines = 1,
+        enabled = enabled
     )
 }
 
@@ -104,6 +110,23 @@ fun VerticalLine() {
             .width(1.dp)
             .wrapContentHeight()
             .background(MaterialTheme.colorScheme.primaryContainer)
+    )
+}
+
+@Composable
+fun HorizontalLine() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
+                )
+            )
     )
 }
 
@@ -207,6 +230,7 @@ fun ToolbarApp(
 @Composable
 fun StandartToolbar(
     title: String,
+    imageVector: ImageVector = Icons.Default.KeyboardArrowUp,
     clickBack : () -> Unit
 ) {
     Row(
@@ -231,7 +255,7 @@ fun StandartToolbar(
                 .clickable {
                     clickBack()
                 },
-            imageVector = Icons.Default.KeyboardArrowUp,
+            imageVector = imageVector,
             contentDescription = stringResource(id = R.string.add_api),
             tint = MaterialTheme.colorScheme.secondary
         )
@@ -318,9 +342,10 @@ fun <T> DropdownMenuInput(
             modifier = Modifier
                 .wrapContentWidth()
                 .padding(horizontal = 10.dp, vertical = 8.dp)
+                .shadow(6.dp, shape = RoundedCornerShape(16.dp))
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
                 .padding(horizontal = 1.dp, vertical = 1.dp)

@@ -1,5 +1,6 @@
 package com.example.apiassistant.ui.screen.add_api
 
+import android.os.Parcelable
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -8,30 +9,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -40,9 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.apiassistant.R
-import com.example.apiassistant.ui.common.animation.AnimatedDestination
+import com.example.apiassistant.ui.common.animation.AnimatedDestinationStyle
 import com.example.apiassistant.ui.common.components.ButtonApply
 import com.example.apiassistant.ui.common.components.DropdownMenuInput
+import com.example.apiassistant.ui.common.components.HorizontalLine
 import com.example.apiassistant.ui.common.components.InputTextField
 import com.example.apiassistant.ui.common.components.LoadingComponent
 import com.example.apiassistant.ui.common.components.StandartToolbar
@@ -50,24 +47,30 @@ import com.example.apiassistant.ui.common.components.TitleText
 import com.example.apiassistant.ui.screen.main.TextCategoryApi
 import com.example.apiassistant.ui.theme.ApiAssistantTheme
 import com.example.domain.api.enums.MethodRequest
-import com.example.domain.api.model.RequestPathParam
+import com.example.domain.api.model.RequestApi
+import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import kotlinx.android.parcel.Parcelize
 
-@AnimatedDestination
+@Destination(
+    style = AnimatedDestinationStyle::class,
+    navArgsDelegate = AddApiNavArgs::class
+)
 @Composable
 fun AddApiScreen(
-    viewModel: AddApiViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    navArgs: AddApiNavArgs
 ) {
+    val viewModel : AddApiViewModel = hiltViewModel<AddApiViewModel, AddApiViewModel.AddApiViewModelFactory> { factory ->
+        factory.create(navArgs.requestApi)
+    }
 
     observeEffect(
         effect = viewModel.effect.value,
         navigator = navigator,
         actionAfterObserveEffect = { viewModel.setDefaultEffect() }
     )
-    
-    LoadingComponent(isLoading = viewModel.state.value.isLoading)
 
     LazyColumn {
         item {
@@ -77,123 +80,127 @@ fun AddApiScreen(
             )
         }
         item {
-            TextCategoryApi(title = stringResource(id = R.string.title_parse_api))
-            UrlSwaggerField(
-                onClickParse = { urlSwagger ->
-                    viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi(urlSwagger))
-                }
-            )
-        }
-        item {
-            TextCategoryApi(title = stringResource(id = R.string.title_input_api))
-            UrlApiField(
-                url = viewModel.state.value.url,
-                methodsRequest = viewModel.getMethodsRequest(),
-                onValueChange = { newValue: String ->
-                    viewModel.onAction(AddApiViewModel.Action.SetUrl(newValue))
-                },
-                onMethodChange = { method: MethodRequest ->
-                    viewModel.onAction(AddApiViewModel.Action.ChangeMethodRequest(method))
-                }
-            )
-        }
-        item {
-            TitleText(text = stringResource(id = R.string.path_variables))
-        }
-        viewModel.state.value.pathParams?.let {
-            itemsIndexed(it) { index, item ->
-                PathVariableComponent(
-                    pathParam = item,
-                    onNameChange = { newValue ->
-                        viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(
-                            index = index,
-                            name = newValue
-                        ))
-                    },
-                    onValueChange = { newValue ->
-                        viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(
-                            index = index,
-                            value = newValue
-                        ))
-                    },
-                    labelFirstColumn = stringResource(id = R.string.name_variable),
-                    labelSecondColumn = stringResource(id = R.string.type_variable)
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .shadow(8.dp, shape = RoundedCornerShape(8.dp))
+                    .background(
+                        MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(bottom = 9.dp)
+            ) {
+                TextCategoryApi(title = stringResource(id = R.string.title_parse_api))
+                UrlSwaggerField(
+                    onClickParse = { urlSwagger ->
+                        viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi(urlSwagger))
+                    }
                 )
-//                DoubleTextField(
-//                    label1 = stringResource(id = R.string.name_variable),
-//                    label2 = stringResource(id = R.string.type_variable),
-//                    onValueChange1 = { newValue ->
-//                        viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(
-//                            index = index,
-//                            name = newValue
-//                        ))
-//                    },
-//                    onValueChange2 = { newValue ->
-//                        viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(
-//                            index = index,
-//                            value = newValue
-//                        ))
-//                    }
-//                )
             }
         }
         item {
-            Text(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(16.dp)
+                    .padding(8.dp)
+                    .shadow(8.dp, shape = RoundedCornerShape(8.dp))
+                    .background(
+                        MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp)
                     )
-                    .padding(horizontal = 1.dp, vertical = 1.dp)
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 6.dp, horizontal = 12.dp)
-                    .clickable { viewModel.onAction(AddApiViewModel.Action.AddPathVariable) },
-                text = stringResource(id = R.string.add_path_variable),
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Center
-            )
-        }
-        item {
-            TitleText(text = stringResource(id = R.string.body_json))
-        }
-        item {
-            BodyJsonComponent(
-                textBody = viewModel.state.value.body ?: "",
-                onValueChange = { newValue ->
-                    viewModel.onAction(AddApiViewModel.Action.UpdateBodyJson(newValue))
+                    .padding(bottom = 9.dp)
+            ) {
+                TextCategoryApi(title = stringResource(id = R.string.title_input_api))
+                UrlApiField(
+                    url = viewModel.state.value.url,
+                    methodsRequest = viewModel.getMethodsRequest(),
+                    onValueChange = { newValue: String ->
+                        viewModel.onAction(AddApiViewModel.Action.SetUrl(newValue))
+                    },
+                    onMethodChange = { method: MethodRequest ->
+                        viewModel.onAction(AddApiViewModel.Action.ChangeMethodRequest(method))
+                    }
+                )
+                Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
+                HorizontalLine()
+
+                TitleText(text = stringResource(id = R.string.path_variables))
+                viewModel.state.value.pathParams?.let {
+                    it.forEachIndexed {  index, item ->
+                        PathVariableComponent(
+                            textFirstColumn = item.name,
+                            textSecondColumn = item.type,
+                            onNameChange = { newValue ->
+                                viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(
+                                    index = index,
+                                    name = newValue
+                                ))
+                            },
+                            onValueChange = { newValue ->
+                                viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(
+                                    index = index,
+                                    value = newValue
+                                ))
+                            },
+                            labelFirstColumn = stringResource(id = R.string.name_variable),
+                            labelSecondColumn = stringResource(id = R.string.type_variable)
+                        )
+                    }
                 }
-            )
-        }
-        item {
-            TitleText(text = stringResource(id = R.string.voice_command))
-        }
-        item {
-            InputTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.common_start_padding)),
-                text = viewModel.state.value.voiceString ?: "",
-                onValueChange = { newValue ->
-                    viewModel.onAction(AddApiViewModel.Action.UpdateVoiceCommand(newValue))
-                },
-                label = stringResource(id = R.string.voice_command)
-            )
-        }
-        item {
-            ButtonApply(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                text = stringResource(id = R.string.save),
-                onClick = {
-                    viewModel.onAction(AddApiViewModel.Action.SaveApi)
-                }
-            )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .shadow(8.dp, shape = RoundedCornerShape(16.dp))
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(horizontal = 1.dp, vertical = 1.dp)
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 6.dp, horizontal = 12.dp)
+                        .clickable { viewModel.onAction(AddApiViewModel.Action.AddPathVariable) },
+                    text = stringResource(id = R.string.add_path_variable),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
+                HorizontalLine()
+
+                TitleText(text = stringResource(id = R.string.body_json))
+                BodyJsonComponent(
+                    textBody = viewModel.state.value.body ?: "",
+                    onValueChange = { newValue ->
+                        viewModel.onAction(AddApiViewModel.Action.UpdateBodyJson(newValue))
+                    }
+                )
+                Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
+                HorizontalLine()
+
+                TitleText(text = stringResource(id = R.string.voice_command))
+                InputTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(id = R.dimen.common_start_padding)),
+                    text = viewModel.state.value.voiceString ?: "",
+                    onValueChange = { newValue ->
+                        viewModel.onAction(AddApiViewModel.Action.UpdateVoiceCommand(newValue))
+                    },
+                    label = stringResource(id = R.string.voice_command)
+                )
+                ButtonApply(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    text = stringResource(id = R.string.save),
+                    onClick = {
+                        viewModel.onAction(AddApiViewModel.Action.SaveApi)
+                    }
+                )
+            }
         }
     }
+    LoadingComponent(isLoading = viewModel.state.value.isLoading)
 }
 
 @Composable
@@ -214,7 +221,8 @@ fun UrlSwaggerField(
 
         InputTextField(
             modifier = Modifier
-                .wrapContentWidth(),
+                .fillMaxWidth(0.85f)
+                .padding(end = 6.dp),
             text = urlSwagger.value,
             onValueChange = { newValue ->
                 urlSwagger.value = newValue
@@ -260,65 +268,16 @@ fun UrlApiField(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DoubleTextField(
-    modifier: Modifier = Modifier,
-    label1: String,
-    label2: String,
-    onValueChange1: (String) -> Unit,
-    onValueChange2: (String) -> Unit
-) {
-    val borderColor = Color.Gray
-    val dividerColor = Color.LightGray
-
-    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical=8.dp)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, borderColor),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = "",
-                onValueChange = onValueChange1,
-                label = { Text(label1) },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                )
-            )
-
-            Divider(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(30.dp)
-                    .background(dividerColor)
-            )
-
-            TextField(
-                modifier = Modifier.weight(1f).background(MaterialTheme.colorScheme.background),
-                value = "",
-                onValueChange = onValueChange2,
-                label = { Text(label2) },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                )
-            )
-        }
-    }
-}
 @Composable
 fun PathVariableComponent(
-    pathParam: RequestPathParam,
     labelFirstColumn: String,
     labelSecondColumn: String,
+    textFirstColumn: String,
+    textSecondColumn: String,
     onNameChange: (newValue: String) -> Unit,
-    onValueChange: (newValue: String) -> Unit
+    onValueChange: (newValue: String) -> Unit,
+    enabledFirstColumn: Boolean = true,
+    enabledSecondColumn: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -329,17 +288,19 @@ fun PathVariableComponent(
     ) {
         InputTextField(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.65f)
                 .padding(end = 8.dp),
-            text = pathParam.name,
+            text = textFirstColumn,
             onValueChange = onNameChange,
-            label = labelFirstColumn
+            label = labelFirstColumn,
+            enabled = enabledFirstColumn
         )
         InputTextField(
             modifier = Modifier.wrapContentWidth(),
-            text = pathParam.type,
+            text = textSecondColumn,
             label = labelSecondColumn,
-            onValueChange = onValueChange
+            onValueChange = onValueChange,
+            enabled = enabledSecondColumn
         )
     }
 }
@@ -389,6 +350,12 @@ private fun observeEffect(
 @Composable
 fun AddApiScreenPreview() {
     ApiAssistantTheme {
-        AddApiScreen(navigator = EmptyDestinationsNavigator)
+        AddApiScreen(
+            navigator = EmptyDestinationsNavigator,
+            AddApiNavArgs(null)
+        )
     }
 }
+
+@Parcelize
+data class AddApiNavArgs(val requestApi: RequestApi? = null): Parcelable

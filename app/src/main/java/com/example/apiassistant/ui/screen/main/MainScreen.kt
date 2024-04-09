@@ -59,8 +59,6 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
         }
     )
 
-    LoadingComponent(isLoading = viewModel.state.value.isLoading)
-
     val onClickApi = { requestApi: RequestApi ->
         viewModel.onAction(MainScreenViewModel.Action.OnClickApi(requestApi))
     }
@@ -105,6 +103,7 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
             }
         }
     }
+    LoadingComponent(isLoading = viewModel.state.value.isLoading)
 }
 
 @Composable
@@ -253,7 +252,7 @@ private fun observeEffect(
     effect?.let {
         when (it) {
             is MainScreenViewModel.Effect.NavigateToAddApiScreen -> {
-                navigator.navigate(AddApiScreenDestination)
+                navigator.navigate(AddApiScreenDestination(requestApi = null))
             }
             is MainScreenViewModel.Effect.NavigateToTestApiScreen -> {
                 navigator.navigate(TestApiScreenDestination(requestApi = it.requestApi))

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = TestApiViewModel.TestApiViewModelFactory::class)
 class TestApiViewModel @AssistedInject constructor(
-    @Assisted private val requestApi: RequestApi,
+    @Assisted val requestApi: RequestApi,
     private val sendRequestUseCase: SendRequestUseCase
 ) : ViewModel() {
     private val _state: MutableState<State> = mutableStateOf(State(
@@ -48,7 +48,7 @@ class TestApiViewModel @AssistedInject constructor(
         val listNewPathParams = state.value.pathParams?.toMutableList() ?: mutableListOf()
         listNewPathParams[index] = listNewPathParams[index]
             .copy(
-                value = value ?: listNewPathParams[index].type
+                value = value ?: listNewPathParams[index].value
             )
         _state.value = _state.value.copy(pathParams = listNewPathParams)
     }

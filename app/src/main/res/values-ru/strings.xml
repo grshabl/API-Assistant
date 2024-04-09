@@ -30,6 +30,7 @@
     <string name="error_parse_swagger">Ошибка парсинга api</string>
 
     <!-- Test api -->
+    <string name="title_test_api">Заполните поля</string>
     <string name="test_api">Тестирование API</string>
     <string name="request">Отправить запрос</string>
     <string name="value_variable">value</string>

@@ -9,17 +9,26 @@ import com.example.domain.add_api.usecase.ParseUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AddApiViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddApiViewModel.AddApiViewModelFactory::class)
+class AddApiViewModel @AssistedInject constructor(
+    @Assisted val requestApi: RequestApi? = null,
     private val addApiUseCase: AddApiUseCase,
     private val parseUseCase: ParseUseCase
 ) : ViewModel() {
 
-    private val _state: MutableState<State> = mutableStateOf(State())
+    private val _state: MutableState<State> = mutableStateOf(State(
+        method = requestApi?.method ?: MethodRequest.GET,
+        url = requestApi?.url ?: "",
+        pathParams = requestApi?.pathParams,
+        body = requestApi?.body,
+        voiceString = requestApi?.voiceString,
+    ))
     val state: androidx.compose.runtime.State<State> = _state
 
     private val _effect: MutableState<Effect?> = mutableStateOf(null)
@@ -148,5 +157,10 @@ class AddApiViewModel @Inject constructor(
     sealed class Effect {
         data object GoBack : Effect()
         data object ShowErrorParse: Effect()
+    }
+
+    @AssistedFactory
+    interface AddApiViewModelFactory {
+        fun create(requestApi: RequestApi? = null): AddApiViewModel
     }
 }
