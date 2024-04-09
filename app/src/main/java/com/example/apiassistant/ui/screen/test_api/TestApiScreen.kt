@@ -70,7 +70,7 @@ fun TestApiScreen(
                     .padding(8.dp)
                     .shadow(8.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.tertiaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(bottom = 9.dp)

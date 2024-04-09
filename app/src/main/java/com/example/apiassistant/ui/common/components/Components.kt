@@ -349,7 +349,7 @@ fun <T> DropdownMenuInput(
                     shape = RoundedCornerShape(16.dp)
                 )
                 .padding(horizontal = 1.dp, vertical = 1.dp)
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .padding(vertical = 6.dp, horizontal = 12.dp)
                 .clickable { expanded = true },
             text = items[selectedIndex].toString(),

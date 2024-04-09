@@ -85,7 +85,7 @@ fun AddApiScreen(
                     .padding(8.dp)
                     .shadow(8.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.tertiaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(bottom = 9.dp)
@@ -104,7 +104,7 @@ fun AddApiScreen(
                     .padding(8.dp)
                     .shadow(8.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.tertiaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(bottom = 9.dp)
@@ -157,7 +157,7 @@ fun AddApiScreen(
                             shape = RoundedCornerShape(16.dp)
                         )
                         .padding(horizontal = 1.dp, vertical = 1.dp)
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
                         .padding(vertical = 6.dp, horizontal = 12.dp)
                         .clickable { viewModel.onAction(AddApiViewModel.Action.AddPathVariable) },
                     text = stringResource(id = R.string.add_path_variable),

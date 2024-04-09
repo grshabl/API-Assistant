@@ -7,18 +7,20 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = LightBlue,
-    onPrimary = Color.Black,
+    primary = Orange,
+    primaryContainer = LightDark,
     secondary = White,
+    onPrimary = White,
     tertiary = Red,
-    background = White,
-    onBackground = LightBlue
+    background = NotStrongDark,
+    onBackground = CustomGray,
+    tertiaryContainer = CustomLightGray,
+    onSecondaryContainer = LightGrayDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -28,7 +30,8 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Dark,
     tertiary = Red,
     background = White,
-    onBackground = LightBlue,
+    onBackground = White,
+    tertiaryContainer = White,
     onSecondaryContainer = LightGrayEnd
 
     //1. **ColorPrimary**: Это основной цвет приложения, используемый для выделения основных элементов интерфейса,

@@ -79,15 +79,20 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel(),
         LazyColumn {
             item {
                 key ("likes api") {
-                    ColumnOneCategoryApi(
-                        titleCategory = stringResource(id = R.string.likes_api),
-                        listApi = viewModel.getLikesApi(
-                            listApi = viewModel.state.value.listApi,
-                        ),
-                        onClickApi = onClickApi,
-                        onClickLikeApi = onClickLikeApi,
-                        onClickDeleteApi = onClickDeleteApi
+                    val likesApi = viewModel.getLikesApi(
+                        listApi = viewModel.state.value.listApi,
                     )
+                    if (likesApi.isNotEmpty()) {
+                        ColumnOneCategoryApi(
+                            titleCategory = stringResource(id = R.string.likes_api),
+                            listApi = viewModel.getLikesApi(
+                                listApi = viewModel.state.value.listApi,
+                            ),
+                            onClickApi = onClickApi,
+                            onClickLikeApi = onClickLikeApi,
+                            onClickDeleteApi = onClickDeleteApi
+                        )
+                    }
                 }
             }
             item {
@@ -118,7 +123,7 @@ fun ColumnOneCategoryApi(
         modifier = Modifier
             .padding(8.dp)
             .shadow(8.dp, shape = RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.tertiaryContainer, shape = RoundedCornerShape(8.dp))
 //            .padding(horizontal = 1.dp, vertical = 1.dp)
 //            .background(MaterialTheme.colorScheme.background)
     ) {
@@ -181,7 +186,7 @@ fun CardApi(
             .shadow(4.dp, shape = RoundedCornerShape(8.dp))
 //            .border(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 1.dp, vertical = 1.dp)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.onBackground)
             .padding(vertical = 6.dp)
             .clickable {
                 Log.d("test", "onClickApi")
