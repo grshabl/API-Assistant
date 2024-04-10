@@ -112,7 +112,7 @@ class TestApiViewModelTest {
             method = TEST_REQUEST_API.method,
             url = TEST_REQUEST_API.url,
             pathParams = TEST_REQUEST_API.pathParams,
-            response = "200 OK\ntest_json"
+            response = Response(code = 200, message = "OK", body = "test_json")
         )
         Assert.assertEquals(expectedState, viewModel.state.value)
     }

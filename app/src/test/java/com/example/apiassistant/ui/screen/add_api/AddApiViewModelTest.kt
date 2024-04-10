@@ -2,16 +2,13 @@ package com.example.apiassistant.ui.screen.add_api
 
 import com.example.apiassistant.utils.MainDispatcherRule
 import com.example.domain.add_api.usecase.AddApiUseCase
+import com.example.domain.add_api.usecase.ParseUseCase
 import com.example.domain.api.enums.MethodRequest
-import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
-import com.example.domain.api.usecase.ParserUseCase
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.exceptions.base.MockitoException
 
 class AddApiViewModelTest {
 
@@ -19,11 +16,11 @@ class AddApiViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val mockAddApiUseCase = Mockito.mock(AddApiUseCase::class.java)
-    private val mockParserUseCase = Mockito.mock(ParserUseCase::class.java)
+    private val mockParseUseCase = Mockito.mock(ParseUseCase::class.java)
 
     @Test
     fun testSetDefaultEffect() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.setDefaultEffect()
         Assert.assertEquals(null, viewModel.effect.value)
@@ -31,7 +28,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testGetMethodsRequest() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         val actual = viewModel.getMethodsRequest()
         Assert.assertArrayEquals(MethodRequest.values(), actual)
@@ -39,7 +36,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionSetUrl() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.SetUrl("test_url"))
 
@@ -51,7 +48,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionChangeMethodRequest() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.ChangeMethodRequest(MethodRequest.POST))
 
@@ -62,42 +59,8 @@ class AddApiViewModelTest {
     }
 
     @Test
-    fun testOnActionParseSwaggerApi_isSuccess() = runBlocking {
-        Mockito.`when`(mockParserUseCase.getListRequestApi("https://petstore.swagger.io/v2/swagger.json"))
-            .thenReturn(listOf(
-                RequestApi(
-                    id = "1",
-                    method = MethodRequest.GET,
-                    url = "test_url"
-                )
-            ))
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
-
-        viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi("https://petstore.swagger.io/v2/swagger.json"))
-
-        val expectedState = AddApiViewModel.State()
-        val expectedEffect: AddApiViewModel.Effect = AddApiViewModel.Effect.GoBack
-        Assert.assertEquals(expectedState, viewModel.state.value)
-        Assert.assertEquals(expectedEffect, viewModel.effect.value)
-    }
-
-    @Test
-    fun testOnActionParseSwaggerApi_isFailed() = runBlocking {
-        Mockito.`when`(mockParserUseCase.getListRequestApi("https://petstore.swagger.io/v2/swagger.json"))
-            .thenThrow(MockitoException("Error parse"))
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
-
-        viewModel.onAction(AddApiViewModel.Action.ParseSwaggerApi("https://petstore.swagger.io/v2/swagger.json"))
-
-        val expectedState = AddApiViewModel.State()
-        val expectedEffect: AddApiViewModel.Effect = AddApiViewModel.Effect.ShowErrorParse
-        Assert.assertEquals(expectedState, viewModel.state.value)
-        Assert.assertEquals(expectedEffect, viewModel.effect.value)
-    }
-
-    @Test
     fun testOnActionUpdateNamePathVariable() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
         viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(0, "test_name"))
@@ -110,7 +73,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateTypePathVariable() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
         viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(0, "test_type"))
@@ -123,7 +86,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionAddPathVariable() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
 
@@ -135,7 +98,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateBodyJson() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.UpdateBodyJson("test_json"))
 
@@ -147,7 +110,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateVoiceCommand() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.UpdateVoiceCommand("test_command"))
 
@@ -159,7 +122,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionSaveApi() {
-        val viewModel = AddApiViewModel(mockAddApiUseCase, mockParserUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.SaveApi)
 
