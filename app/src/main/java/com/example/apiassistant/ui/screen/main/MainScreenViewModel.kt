@@ -60,7 +60,10 @@ class MainScreenViewModel @Inject constructor(
             command?.let {
                 val requestApi = detectVoiceCommandUseCase.detectVoiceCommand(command)
                 requestApi?.let {
-                    onClickApi(it)
+                    onClickApi(
+                        requestApi = it,
+                        detectedVoiceCommand = command
+                    )
                 }
             }
         }
@@ -70,8 +73,14 @@ class MainScreenViewModel @Inject constructor(
         _effect.value = Effect.NavigateToAddApiScreen
     }
 
-    private fun onClickApi(requestApi: RequestApi) {
-        _effect.value = Effect.NavigateToTestApiScreen(requestApi)
+    private fun onClickApi(
+        requestApi: RequestApi,
+        detectedVoiceCommand: String? = null
+    ) {
+        _effect.value = Effect.NavigateToTestApiScreen(
+            requestApi = requestApi,
+            detectedVoiceCommand = detectedVoiceCommand
+        )
     }
     private fun onClickLikeApi(requestApi: RequestApi) {
         viewModelScope.launch {
@@ -114,7 +123,10 @@ class MainScreenViewModel @Inject constructor(
 
     sealed class Effect {
         data object NavigateToAddApiScreen: Effect()
-        data class NavigateToTestApiScreen(val requestApi: RequestApi): Effect()
+        data class NavigateToTestApiScreen(
+            val requestApi: RequestApi,
+            val detectedVoiceCommand: String? = null
+        ): Effect()
     }
 
     data class State(

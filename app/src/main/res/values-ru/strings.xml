@@ -5,6 +5,7 @@
     <!-- MainScreen -->
     <string name="permission_voice">Необходимо разрешение для работы с микрофоном</string>
     <string name="recognize_command">Распознать команду</string>
+    <string name="error_recognize_command">Команда не найдена</string>
     <string name="hint_speak">Назовите команду</string>
     <string name="add_api">Добавить API</string>
     <string name="delete_api">Удалить API</string>

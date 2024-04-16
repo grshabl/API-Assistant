@@ -1,6 +1,8 @@
 package com.example.apiassistant.ui.screen.test_api
 
 import android.os.Parcelable
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,8 +56,18 @@ fun TestApiScreen(
     navArgs: TestApiNavArgs
 ) {
     val viewModel : TestApiViewModel = hiltViewModel<TestApiViewModel, TestApiViewModel.TestApiViewModelFactory> { factory ->
-        factory.create(navArgs.requestApi)
+        factory.create(
+            requestApi = navArgs.requestApi,
+            detectedVoiceCommand = navArgs.detectedVoiceCommand
+        )
     }
+
+    observeEffect(
+        effect = viewModel.effect.value,
+        actionAfterObserveEffect = { viewModel.resetEffect() }
+    )
+
+    Log.d("test", "voice command = ${navArgs.detectedVoiceCommand}")
 
     LazyColumn {
         item {
@@ -122,7 +135,7 @@ fun TestApiScreen(
                         viewModel.onAction(TestApiViewModel.Action.UpdateBodyJson(newValue))
                     }
                 )
-                if (!viewModel.state.value.response?.body.isNullOrEmpty()) {
+                if (viewModel.state.value.response != null) {
                     ResponseField(response = viewModel.getResponseText(viewModel.state.value.response))
                 }
                 ButtonApply(
@@ -160,6 +173,29 @@ fun ResponseField(
     )
 }
 
+@Composable
+private fun observeEffect(
+    effect: TestApiViewModel.Effect?,
+    actionAfterObserveEffect: (() -> Unit)? = null
+) {
+    Log.d("test", "observeEffect")
+    effect?.let {
+        when (it) {
+            TestApiViewModel.Effect.ShowToast -> {
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(id = R.string.error_recognize_command),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        actionAfterObserveEffect?.let { function ->
+            function()
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun TestApiScreenPreview() {
@@ -177,4 +213,7 @@ fun TestApiScreenPreview() {
 }
 
 @Parcelize
-data class TestApiNavArgs(val requestApi: RequestApi): Parcelable
+data class TestApiNavArgs(
+    val requestApi: RequestApi,
+    val detectedVoiceCommand: String? = null
+): Parcelable

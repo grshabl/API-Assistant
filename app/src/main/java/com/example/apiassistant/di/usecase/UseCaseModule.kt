@@ -4,6 +4,8 @@ import com.example.domain.add_api.usecase.AddApiUseCase
 import com.example.domain.add_api.usecase.AddApiUseCaseImpl
 import com.example.domain.add_api.usecase.ParseUseCase
 import com.example.domain.add_api.usecase.ParseUseCaseImpl
+import com.example.domain.add_api.usecase.UpdateApiUseCase
+import com.example.domain.add_api.usecase.UpdateApiUseCaseImpl
 import com.example.domain.api.usecase.ParserUseCase
 import com.example.domain.api.usecase.ParserUseCaseImpl
 import com.example.domain.main.usecase.DeleteApiUseCase
@@ -30,6 +32,9 @@ interface UseCaseModule {
 
     @Binds
     fun provideAddApiUseCase(addApiUseCaseImpl: AddApiUseCaseImpl): AddApiUseCase
+
+    @Binds
+    fun provideUpdateApiUseCase(updateApiUseCaseImpl: UpdateApiUseCaseImpl): UpdateApiUseCase
 
     @Binds
     fun provideDeleteApiUseCase(deleteApiUseCaseImpl: DeleteApiUseCaseImpl): DeleteApiUseCase

@@ -316,7 +316,8 @@ fun BodyJsonComponent(
             .padding(dimensionResource(id = R.dimen.common_start_padding)),
         text = textBody,
         label = stringResource(id = R.string.body_json),
-        onValueChange = onValueChange
+        onValueChange = onValueChange,
+        isOneLine = false
     )
 }
 

@@ -4,6 +4,7 @@
     <!-- MainScreen -->
     <string name="permission_voice">Need permission for work with microphone</string>
     <string name="recognize_command">Recognize command</string>
+    <string name="error_recognize_command">Command not found</string>
     <string name="hint_speak">Tell me command</string>
     <string name="add_api">Add API</string>
     <string name="delete_api">Delete API</string>

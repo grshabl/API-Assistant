@@ -91,14 +91,15 @@ fun InputTextField(
     text: String = "",
     onValueChange: (String) -> Unit = {},
     label: String = "",
-    enabled: Boolean= true
+    enabled: Boolean = true,
+    isOneLine: Boolean = true
 ) {
     OutlinedTextField(
         modifier = modifier,
         value = text,
         onValueChange = onValueChange,
         label = { Text(text = label) },
-        maxLines = 1,
+        maxLines = if (isOneLine) 1 else Int.MAX_VALUE,
         enabled = enabled
     )
 }

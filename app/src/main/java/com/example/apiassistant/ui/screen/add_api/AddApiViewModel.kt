@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.add_api.usecase.AddApiUseCase
 import com.example.domain.add_api.usecase.ParseUseCase
+import com.example.domain.add_api.usecase.UpdateApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
@@ -14,15 +15,18 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @HiltViewModel(assistedFactory = AddApiViewModel.AddApiViewModelFactory::class)
 class AddApiViewModel @AssistedInject constructor(
     @Assisted val requestApi: RequestApi? = null,
     private val addApiUseCase: AddApiUseCase,
+    private val updateApiUseCase: UpdateApiUseCase,
     private val parseUseCase: ParseUseCase
 ) : ViewModel() {
 
     private val _state: MutableState<State> = mutableStateOf(State(
+        id = requestApi?.id,
         method = requestApi?.method ?: MethodRequest.GET,
         url = requestApi?.url ?: "",
         pathParams = requestApi?.pathParams,
@@ -98,7 +102,12 @@ class AddApiViewModel @AssistedInject constructor(
 
     private fun saveApi(requestApi: RequestApi) {
         viewModelScope.launch {
-            addApiUseCase.addApi(requestApi)
+            if (state.value.id == null) {
+                addApiUseCase.addApi(requestApi)
+            } else {
+                updateApiUseCase.updateApi(requestApi)
+            }
+
             _effect.value = Effect.GoBack
         }
     }
@@ -122,6 +131,7 @@ class AddApiViewModel @AssistedInject constructor(
             Action.SaveApi -> {
                 saveApi(
                     RequestApi(
+                        id = state.value.id ?: UUID.randomUUID().toString(),
                         method = state.value.method,
                         url = state.value.url,
                         pathParams = state.value.pathParams,
@@ -147,6 +157,7 @@ class AddApiViewModel @AssistedInject constructor(
 
     data class State(
         var isLoading: Boolean = false,
+        var id: String? = null,
         var method: MethodRequest = MethodRequest.GET,
         var url: String = "",
         var pathParams: List<RequestPathParam>? = null,

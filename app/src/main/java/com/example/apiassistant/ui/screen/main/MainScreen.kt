@@ -260,7 +260,10 @@ private fun observeEffect(
                 navigator.navigate(AddApiScreenDestination(requestApi = null))
             }
             is MainScreenViewModel.Effect.NavigateToTestApiScreen -> {
-                navigator.navigate(TestApiScreenDestination(requestApi = it.requestApi))
+                navigator.navigate(TestApiScreenDestination(
+                    requestApi = it.requestApi,
+                    detectedVoiceCommand = it.detectedVoiceCommand
+                ))
             }
         }
 

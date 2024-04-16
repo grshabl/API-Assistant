@@ -21,7 +21,7 @@ class DetectVoiceCommandUseCaseImpl @Inject constructor(
             return it
         }
 
-        // else find 80% similarity
+        // else find 75% similarity
         for (requestApi in listRequestApi) {
             requestApi.voiceString?.let {
                 if (getPercentSimilarity(it, detectedText) >= MIN_PERCENT_SIMILARITY) {
@@ -42,7 +42,7 @@ class DetectVoiceCommandUseCaseImpl @Inject constructor(
     }
 
     companion object {
-        private const val MIN_PERCENT_SIMILARITY = 80
+        private const val MIN_PERCENT_SIMILARITY = 50
     }
 
 }
