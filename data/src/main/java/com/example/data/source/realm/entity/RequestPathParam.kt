@@ -4,5 +4,6 @@ import io.realm.RealmObject
 
 open class RequestPathParam(
     var name: String? = "",
-    var type: String? = ""
+    var type: String? = "",
+    var value: String? = ""
 ) : RealmObject()

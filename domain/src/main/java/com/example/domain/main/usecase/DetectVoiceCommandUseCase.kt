@@ -21,10 +21,12 @@ class DetectVoiceCommandUseCaseImpl @Inject constructor(
             return it
         }
 
-        // else find 75% similarity
+        // else find ..% similarity
         for (requestApi in listRequestApi) {
             requestApi.voiceString?.let {
-                if (getPercentSimilarity(it, detectedText) >= MIN_PERCENT_SIMILARITY) {
+                val voiceCommand = it.replace(REGEX_VARIABLE, "")
+
+                if (getPercentSimilarity(voiceCommand, detectedText) >= MIN_PERCENT_SIMILARITY) {
                     return requestApi
                 }
             }
@@ -35,14 +37,15 @@ class DetectVoiceCommandUseCaseImpl @Inject constructor(
 
     private fun getPercentSimilarity(string1: String, string2: String): Double {
         val jaccardSimilarity = JaccardSimilarity()
-        val similarityScore = jaccardSimilarity.apply(string1, string2)
+        val similarityScore = jaccardSimilarity.apply(string1.lowercase(), string2.lowercase())
         val percentage = (similarityScore * 100).toInt()
 
         return percentage.toDouble()
     }
 
     companion object {
-        private const val MIN_PERCENT_SIMILARITY = 50
+        private const val MIN_PERCENT_SIMILARITY = 60
+        private val REGEX_VARIABLE = Regex("\\{(int|str|bool|double)_\\w+\\}")
     }
 
 }

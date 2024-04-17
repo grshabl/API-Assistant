@@ -136,7 +136,8 @@ class AddApiViewModel @AssistedInject constructor(
                         url = state.value.url,
                         pathParams = state.value.pathParams,
                         body = state.value.body,
-                        voiceString = state.value.voiceString
+                        voiceString = state.value.voiceString,
+                        isLike = requestApi?.isLike ?: false
                     )
                 )
             }

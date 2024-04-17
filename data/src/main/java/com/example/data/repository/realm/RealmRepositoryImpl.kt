@@ -40,6 +40,7 @@ class RealmRepositoryImpl @Inject constructor() : RealmRepository {
                     val realmObject = realm.createObject(RequestPathParam::class.java)
                     realmObject.name = it.name
                     realmObject.type = it.type
+                    realmObject.value = it.value
                     return@map realmObject
                 } ?: listOf())
 
@@ -68,6 +69,7 @@ class RealmRepositoryImpl @Inject constructor() : RealmRepository {
                         val realmObject = realm.createObject(RequestPathParam::class.java)
                         realmObject.name = it.name
                         realmObject.type = it.type
+                        realmObject.value = it.value
                         return@map realmObject
                     } ?: listOf())
 
@@ -98,6 +100,7 @@ class RealmRepositoryImpl @Inject constructor() : RealmRepository {
                     val realmObject = realm.createObject(RequestPathParam::class.java)
                     realmObject.name = it.name
                     realmObject.type = it.type
+                    realmObject.value = it.value
                     return@map realmObject
                 } ?: listOf())
 

@@ -69,6 +69,13 @@ fun TestApiScreen(
 
     Log.d("test", "voice command = ${navArgs.detectedVoiceCommand}")
 
+//    BackPressHandler(
+//        onBackPressed = {
+//            viewModel.updateRequestApi()
+//            navigator.popBackStack()
+//        }
+//    )
+
     LazyColumn {
         item {
             StandartToolbar(
@@ -99,7 +106,9 @@ fun TestApiScreen(
                         viewModel.onAction(TestApiViewModel.Action.ChangeMethodRequest(method))
                     }
                 )
-                Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
+                Spacer(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp))
                 HorizontalLine()
 
                 if (!viewModel.state.value.pathParams.isNullOrEmpty()) {
@@ -124,7 +133,9 @@ fun TestApiScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp))
                     HorizontalLine()
                 }
 

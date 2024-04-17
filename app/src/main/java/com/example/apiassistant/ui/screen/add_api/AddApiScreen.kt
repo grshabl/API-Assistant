@@ -186,7 +186,8 @@ fun AddApiScreen(
                     onValueChange = { newValue ->
                         viewModel.onAction(AddApiViewModel.Action.UpdateVoiceCommand(newValue))
                     },
-                    label = stringResource(id = R.string.voice_command)
+                    label = stringResource(id = R.string.voice_command),
+                    isOneLine = false
                 )
                 ButtonApply(
                     modifier = Modifier
@@ -263,7 +264,8 @@ fun UrlApiField(
                 .padding(end = 16.dp),
             text = url,
             onValueChange = onValueChange,
-            label = stringResource(id = R.string.hint_url)
+            label = stringResource(id = R.string.hint_url),
+            isOneLine = false
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.add_api.usecase.UpdateApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class TestApiViewModel @AssistedInject constructor(
     @Assisted("requestApi") val requestApi: RequestApi,
     @Assisted("detectedVoiceCommand") val detectedVoiceCommand: String? = null,
-    private val sendRequestUseCase: SendRequestUseCase
+    private val sendRequestUseCase: SendRequestUseCase,
+    private val updateApiUseCase: UpdateApiUseCase
 ) : ViewModel() {
     private val _state: MutableState<State> = mutableStateOf(State(
         method = requestApi.method,
@@ -61,13 +63,13 @@ class TestApiViewModel @AssistedInject constructor(
 
     @Throws(IllegalArgumentException::class)
     private fun getMapOfVoiceParams(mask: String, maskedString: String): Map<String, String> {
-        val pattern = Regex("\\{(int|str|bool)_\\w+\\}")
+        val pattern = Regex("\\{(int|str|bool|double)_\\w+\\}")
         val placeholders = pattern.findAll(mask).map { it.value }.toList()
 
         println(placeholders)
 
-        val wordsMask = mask.split(" ").toMutableList()
-        val wordsMaskedText = maskedString.split(" ").toMutableList()
+        val wordsMask = mask.lowercase().split(" ").toMutableList()
+        val wordsMaskedText = maskedString.lowercase().split(" ").toMutableList()
 
         for (text in wordsMask) {
             wordsMaskedText.remove(text)
@@ -95,7 +97,7 @@ class TestApiViewModel @AssistedInject constructor(
                 RequestPathParam(
                     name = pathParam.name,
                     type = pathParam.type,
-                    value = entry?.value ?: ""
+                    value = entry?.value ?: pathParam.value
                 )
             )
         }
@@ -109,7 +111,7 @@ class TestApiViewModel @AssistedInject constructor(
         var newBody = body
         for ((key, value) in mapValues) {
             println("* $key $value $newBody")
-            if (listOf("int", "bool").any { key.contains(it) }) {
+            if (listOf("int", "bool", "double").any { key.contains(it) }) {
                 newBody = newBody?.replace(key, value)
             } else {
                 newBody = newBody?.replace(key, "\"$value\"")
@@ -150,8 +152,10 @@ class TestApiViewModel @AssistedInject constructor(
     }
 
     private fun requestApi(requestParams: RequestParams) {
+        _state.value = _state.value.copy(isLoading = true)
+        updateRequestApi()
+
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
             var response = Response(
                 code = -1,
                 message = "Fialed request"
@@ -166,6 +170,18 @@ class TestApiViewModel @AssistedInject constructor(
             _state.value = state.value.copy(
                 response = response,
                 isLoading = false
+            )
+        }
+    }
+
+    fun updateRequestApi() {
+        viewModelScope.launch {
+            updateApiUseCase.updateApi(
+                requestApi.copy(
+                    method = state.value.method,
+                    url = state.value.url,
+                    pathParams = state.value.pathParams,
+                    body = state.value.body)
             )
         }
     }
