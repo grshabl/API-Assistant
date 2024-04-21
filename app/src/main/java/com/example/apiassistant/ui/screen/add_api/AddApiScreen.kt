@@ -113,6 +113,7 @@ fun AddApiScreen(
                 UrlApiField(
                     url = viewModel.state.value.url,
                     methodsRequest = viewModel.getMethodsRequest(),
+                    selectedItem = viewModel.state.value.method,
                     onValueChange = { newValue: String ->
                         viewModel.onAction(AddApiViewModel.Action.SetUrl(newValue))
                     },
@@ -246,6 +247,7 @@ fun UrlSwaggerField(
 @Composable
 fun UrlApiField(
     methodsRequest: Array<MethodRequest>,
+    selectedItem: MethodRequest,
     url: String,
     onValueChange: (url: String) -> Unit,
     onMethodChange: (method: MethodRequest) -> Unit
@@ -256,6 +258,7 @@ fun UrlApiField(
     ) {
         DropdownMenuInput(
             items = methodsRequest,
+            selectedItem = selectedItem,
             onClickItem = onMethodChange
         )
         InputTextField(

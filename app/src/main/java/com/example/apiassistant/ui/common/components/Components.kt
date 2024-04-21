@@ -338,10 +338,11 @@ fun LoadingComponent(isLoading: Boolean) {
 @Composable
 fun <T> DropdownMenuInput(
     items: Array<T>,
+    selectedItem: T,
     onClickItem: (item: T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableStateOf(items.indexOf(selectedItem)) }
 
     Box(modifier = Modifier.padding(top=4.dp)) {
         Text(

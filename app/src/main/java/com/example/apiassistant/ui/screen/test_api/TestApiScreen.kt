@@ -99,6 +99,7 @@ fun TestApiScreen(
                 UrlApiField(
                     url = viewModel.state.value.url,
                     methodsRequest = viewModel.getMethodsRequest(),
+                    selectedItem = viewModel.state.value.method,
                     onValueChange = { newValue: String ->
                         viewModel.onAction(TestApiViewModel.Action.SetUrl(newValue))
                     },
