@@ -1,6 +1,7 @@
 package com.example.apiassistant.ui.screen.test_api
 
 import com.example.apiassistant.utils.MainDispatcherRule
+import com.example.domain.add_api.usecase.UpdateApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestApi
 import com.example.domain.api.model.RequestPathParam
@@ -19,11 +20,11 @@ class TestApiViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val mockUseCase = Mockito.mock(SendRequestUseCase::class.java)
-
+    private val mockSendRequestUseCase = Mockito.mock(SendRequestUseCase::class.java)
+    private val mockUpdateApiUseCase = Mockito.mock(UpdateApiUseCase::class.java)
     @Test
     fun testGetMethodsRequest() {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
 
         val actual = viewModel.getMethodsRequest()
         Assert.assertArrayEquals(MethodRequest.values(), actual)
@@ -31,7 +32,7 @@ class TestApiViewModelTest {
 
     @Test
     fun testOnActionSetUrl() {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
 
         viewModel.onAction(TestApiViewModel.Action.SetUrl("new_test_url"))
 
@@ -45,7 +46,7 @@ class TestApiViewModelTest {
 
     @Test
     fun testOnActionChangeMethodRequest() {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
 
         viewModel.onAction(TestApiViewModel.Action.ChangeMethodRequest(MethodRequest.POST))
 
@@ -59,7 +60,7 @@ class TestApiViewModelTest {
 
     @Test
     fun testOnActionUpdateNamePathVariable() {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
 
         viewModel.onAction(TestApiViewModel.Action.UpdateValuePathVariable(0, "test_value"))
 
@@ -75,7 +76,7 @@ class TestApiViewModelTest {
 
     @Test
     fun testOnActionUpdateBodyJson() {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
 
         viewModel.onAction(TestApiViewModel.Action.UpdateBodyJson("test_json"))
 
@@ -90,8 +91,8 @@ class TestApiViewModelTest {
 
     @Test
     fun testOnActionRequestApi() = runBlocking {
-        val viewModel = TestApiViewModel(TEST_REQUEST_API, mockUseCase)
-        `when`(mockUseCase.request(
+        val viewModel = TestApiViewModel(TEST_REQUEST_API, null, mockSendRequestUseCase, mockUpdateApiUseCase)
+        `when`(mockSendRequestUseCase.request(
             RequestParams(
             method = viewModel.state.value.method,
             url =  viewModel.state.value.url,

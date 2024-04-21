@@ -3,6 +3,7 @@ package com.example.apiassistant.ui.screen.add_api
 import com.example.apiassistant.utils.MainDispatcherRule
 import com.example.domain.add_api.usecase.AddApiUseCase
 import com.example.domain.add_api.usecase.ParseUseCase
+import com.example.domain.add_api.usecase.UpdateApiUseCase
 import com.example.domain.api.enums.MethodRequest
 import com.example.domain.api.model.RequestPathParam
 import org.junit.Assert
@@ -17,10 +18,11 @@ class AddApiViewModelTest {
 
     private val mockAddApiUseCase = Mockito.mock(AddApiUseCase::class.java)
     private val mockParseUseCase = Mockito.mock(ParseUseCase::class.java)
+    private val mockUpdateApiUseCase = Mockito.mock(UpdateApiUseCase::class.java)
 
     @Test
     fun testSetDefaultEffect() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.setDefaultEffect()
         Assert.assertEquals(null, viewModel.effect.value)
@@ -28,7 +30,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testGetMethodsRequest() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         val actual = viewModel.getMethodsRequest()
         Assert.assertArrayEquals(MethodRequest.values(), actual)
@@ -36,7 +38,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionSetUrl() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.SetUrl("test_url"))
 
@@ -48,7 +50,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionChangeMethodRequest() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.ChangeMethodRequest(MethodRequest.POST))
 
@@ -60,7 +62,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateNamePathVariable() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
         viewModel.onAction(AddApiViewModel.Action.UpdateNamePathVariable(0, "test_name"))
@@ -73,7 +75,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateTypePathVariable() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
         viewModel.onAction(AddApiViewModel.Action.UpdateTypePathVariable(0, "test_type"))
@@ -86,7 +88,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionAddPathVariable() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.AddPathVariable)
 
@@ -98,7 +100,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateBodyJson() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.UpdateBodyJson("test_json"))
 
@@ -110,7 +112,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionUpdateVoiceCommand() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.UpdateVoiceCommand("test_command"))
 
@@ -122,7 +124,7 @@ class AddApiViewModelTest {
 
     @Test
     fun testOnActionSaveApi() {
-        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockParseUseCase)
+        val viewModel = AddApiViewModel(null, mockAddApiUseCase, mockUpdateApiUseCase, mockParseUseCase)
 
         viewModel.onAction(AddApiViewModel.Action.SaveApi)
 

@@ -107,13 +107,14 @@ class MainScreenViewModelTest {
         viewModel.onAction(MainScreenViewModel.Action.RecognizeVoiceCommand("command"))
 
         val expectedEffect: MainScreenViewModel.Effect = MainScreenViewModel.Effect.NavigateToTestApiScreen(
-            RequestApi(
+            requestApi = RequestApi(
                 id = "2",
                 method = MethodRequest.GET,
                 url = "test_url_2",
                 voiceString = "command",
                 isLike = true
-            )
+            ),
+            detectedVoiceCommand = "command"
         )
         Assert.assertEquals(expectedEffect, viewModel.effect.value)
     }

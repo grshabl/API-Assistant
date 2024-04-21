@@ -56,7 +56,7 @@ class MainScreenViewModel @Inject constructor(
         listApi.filter { it.isLike }
 
     private fun recognizeVoiceCommand(command: String?) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch {
             command?.let {
                 val requestApi = detectVoiceCommandUseCase.detectVoiceCommand(command)
                 requestApi?.let {
